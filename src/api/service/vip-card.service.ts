@@ -50,7 +50,7 @@ async function myVipCardService(data: any) {
       },
     };
     const listofBuyCard = await getByUserId(query);
-    const listOfVipCard = await axios.get("http://65.2.149.164/vip_card/list", {
+    const listOfVipCard = await axios.get("http://192.168.1.46:3001/vip_card/list", {
       headers: {
         "Content-Type": "application/json",
       },

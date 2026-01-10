@@ -1,7 +1,7 @@
 import { Socket } from "socket.io";
 import { verifyAccessToken } from "src/middleware/auth.token";
 import axios from "axios";
-const url = "http://13.126.197.184";
+const url = "http://192.168.1.46:3005";
 
 async function leaveTimerClubPlay(io: any, socket: Socket, data: any) {
   try {

@@ -18,7 +18,7 @@ async function getSettingProfileService(data: any) {
       );
     }
 
-    const getUser = await axios.get(`http://3.6.41.207/auth/user-detail`, {
+    const getUser = await axios.get(`http://192.168.1.46:3003/auth/user-detail`, {
       headers: {
         "Content-Type": "application/json",
         Authorization: `${authToken}`,

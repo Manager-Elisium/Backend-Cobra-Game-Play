@@ -4,7 +4,7 @@ import axios from "axios";
 
 async function listLobbyService() {
   try {
-    const listOfLobby = await axios.get(`http://65.2.149.164/lobby/list`, {
+    const listOfLobby = await axios.get(`http://192.168.1.46:3001/lobby/list`, {
       headers: {
         "Content-Type": "application/json",
       },

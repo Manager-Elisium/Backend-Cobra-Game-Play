@@ -7,7 +7,7 @@ import {
 } from "src/repository/room-club-play.entity";
 import axios from "axios";
 import { clubGameWinner } from "src/util/game-winner";
-const url = "http://13.126.197.184";
+const url = "http://192.168.1.46:3005";
 
 async function leaveRoomClubPlay(io: any, socket: Socket, data: any) {
   try {

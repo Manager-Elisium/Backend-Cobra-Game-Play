@@ -10,7 +10,7 @@ async function listShopService(shopType: string) {
   try {
     // 13.127.87.96
     const listOfShop = await axios.get(
-      `http://65.2.149.164/shop/list/${shopType}`,
+      `http://192.168.1.46:3001/shop/list/${shopType}`,
       {
         headers: {
           "Content-Type": "application/json",
@@ -30,7 +30,7 @@ async function buyShopService(data: any) {
   try {
     const { USER_ID, SHOP_ID } = data;
     const getShopById = await axios.get(
-      `http://65.2.149.164/shop/get-shop-for-user/${SHOP_ID}`,
+      `http://192.168.1.46:3001/shop/get-shop-for-user/${SHOP_ID}`,
       {
         headers: {
           "Content-Type": "application/json",
