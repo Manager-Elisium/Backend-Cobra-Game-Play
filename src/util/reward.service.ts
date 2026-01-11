@@ -300,13 +300,18 @@ async function subtractCoin(data: any) {
 
 async function addCoin(data: any) {
   const { USER_ID, COIN } = data;
+  console.log("addCoin - Adding coins. USER_ID:", USER_ID, "COIN:", COIN);
   let getUser = await getOneUserRecord({ USER_ID });
   if (getUser) {
+    console.log("addCoin - Current coins before:", getUser.CURRENT_COIN);
     const coin = getUser.CURRENT_COIN + COIN;
+    console.log("addCoin - New coin amount:", coin);
     getUser = (await updateUserRecord(getUser?.ID, { CURRENT_COIN: coin }))
       .raw?.[0];
-    return { isAddCoin: true };
+    console.log("addCoin - Updated user record:", getUser?.CURRENT_COIN);
+    return { isAddCoin: true, getUser };
   } else {
+    console.log("addCoin - User not found for USER_ID:", USER_ID);
     return { isAddCoin: false };
   }
 }

@@ -33,11 +33,12 @@ async function getPlayerGiftService(data: any) {
     }
     if (isSendCoin) {
       const insertGift = SEND_COIN_USERS?.map((data: any) => ({
-        USER_ID: data, // Send Coin - User Id
-        REQUEST_USER_ID: USER_ID, // My User Id
+        USER_ID: data, // Send Coin - User Id (Receiver's ID)
+        REQUEST_USER_ID: USER_ID, // My User Id (Sender's ID)
         COIN: 50,
         IS_COLLECT: true,
       }));
+      console.log("Sending coins - Creating gifts:", JSON.stringify(insertGift));
       await insertManyById(insertGift);
     } else {
       const insertGift = SEND_COIN_USERS?.map((data: any) => ({
@@ -54,21 +55,41 @@ async function getPlayerGiftService(data: any) {
     let mergedArray: any;
 
     if (isSendCoin) {
-      mergedArray = getUserSendRecevieCoin?.map((coin: any) => {
-        const isInclude = SEND_COIN_USERS?.includes(coin.ID);
-        if (isInclude) {
-          return { ...coin, IS_SEND_COIN: true };
+      // FIX: Add missing friends to the array first, then update
+      mergedArray = [...getUserSendRecevieCoin];
+      
+      SEND_COIN_USERS?.forEach((friendId: string) => {
+        const existingIndex = mergedArray.findIndex((coin: any) => coin.ID === friendId);
+        if (existingIndex >= 0) {
+          // Update existing entry
+          mergedArray[existingIndex] = { ...mergedArray[existingIndex], IS_SEND_COIN: true };
         } else {
-          return { ...coin };
+          // Add new entry for friend not in SEND_RECEIVE_COIN
+          mergedArray.push({
+            ID: friendId,
+            IS_SEND_COIN: true,
+            IS_REQUEST_COIN: false,
+            COIN: 0,
+          });
         }
       });
     } else {
-      mergedArray = getUserSendRecevieCoin?.map((coin: any) => {
-        const isInclude = SEND_COIN_USERS?.includes(coin.ID);
-        if (isInclude) {
-          return { ...coin, IS_REQUEST_COIN: true };
+      // FIX: Add missing friends to the array first, then update
+      mergedArray = [...getUserSendRecevieCoin];
+      
+      SEND_COIN_USERS?.forEach((friendId: string) => {
+        const existingIndex = mergedArray.findIndex((coin: any) => coin.ID === friendId);
+        if (existingIndex >= 0) {
+          // Update existing entry
+          mergedArray[existingIndex] = { ...mergedArray[existingIndex], IS_REQUEST_COIN: true };
         } else {
-          return { ...coin };
+          // Add new entry for friend not in SEND_RECEIVE_COIN
+          mergedArray.push({
+            ID: friendId,
+            IS_SEND_COIN: false,
+            IS_REQUEST_COIN: true,
+            COIN: 0,
+          });
         }
       });
     }
@@ -89,9 +110,12 @@ async function getPlayerGiftService(data: any) {
 async function listCollectGiftService(data: any) {
   try {
     const { USER_ID, authToken } = data;
+    console.log("listCollectGiftService - Querying gifts for USER_ID:", USER_ID);
+    // Get all gifts for this user (both direct sends and request coins)
     const getOne = await getGiftByUserId({
       where: { USER_ID },
     });
+    console.log("listCollectGiftService - Found gifts:", getOne?.length || 0, getOne);
     if (!getOne?.length) {
       return {
         giftAndAcceptCoin: [],
@@ -99,9 +123,18 @@ async function listCollectGiftService(data: any) {
     }
 
     const getUserId = [
-      ...new Set(getOne?.map((data) => data.REQUEST_USER_ID)),
-    ].toString();
-    const reqBody = await encrypt(JSON.stringify({ USER_IDS: getUserId }));
+      ...new Set(getOne?.map((data) => data.REQUEST_USER_ID).filter((id) => id)),
+    ];
+    
+    // If no valid user IDs, return empty array
+    if (!getUserId.length) {
+      return {
+        giftAndAcceptCoin: [],
+      };
+    }
+
+    const userIdsString = getUserId.join(",");
+    const reqBody = await encrypt(JSON.stringify({ USER_IDS: userIdsString }));
     const getUser = await axios.post(
       `http://192.168.1.46:3000/user/auth/list-user-details`,
       { public_key: reqBody.public_key, content: reqBody.content },
@@ -112,22 +145,43 @@ async function listCollectGiftService(data: any) {
         },
       }
     );
-    let getUserProfile = (await decrypt(getUser?.data?.data)) as any;
-    getUserProfile = JSON.parse(getUserProfile.toString()).users;
+    
+    if (!getUser?.data?.public_key || !getUser?.data?.content) {
+      console.log("listCollectGiftService - No user data from auth service");
+      return {
+        giftAndAcceptCoin: [],
+      };
+    }
+    
+    let getUserProfile = (await decrypt({ public_key: getUser.data.public_key, content: getUser.data.content })) as any;
+    getUserProfile = JSON.parse(getUserProfile.toString());
+    console.log("listCollectGiftService - Decrypted response:", getUserProfile);
+    getUserProfile = getUserProfile?.users || [];
+    console.log("listCollectGiftService - User profiles from auth service:", getUserProfile?.length || 0, getUserProfile);
+    
     const getUsersProfile = getOne.map((data) => {
       let getProfile = getUserProfile.find(
-        (obj) => obj.ID === data.REQUEST_USER_ID
+        (obj) => obj?.ID === data.REQUEST_USER_ID
       );
-      return { ...getProfile, ...data };
+      console.log(`listCollectGiftService - Matching REQUEST_USER_ID: ${data.REQUEST_USER_ID}, Found: ${!!getProfile}`);
+      if (getProfile) {
+        return { ...getProfile, ...data };
+      } else {
+        // Return gift data even if profile not found
+        return { ...data };
+      }
     });
+    
+    console.log("listCollectGiftService - Final mapped profiles:", getUsersProfile?.length || 0);
     return {
       giftAndAcceptCoin: getUsersProfile ?? [],
     };
   } catch (error) {
-    throw new StandardError(
-      ErrorCodes.API_VALIDATION_ERROR,
-      error?.message ?? "User's Gift - Error."
-    );
+    // Return empty array instead of throwing error for better UX
+    console.error("Error in listCollectGiftService:", error);
+    return {
+      giftAndAcceptCoin: [],
+    };
   }
 }
 
@@ -148,16 +202,22 @@ async function acceptCollectGiftService(data: any) {
       };
     }
 
-    // add coin
+    // add coin for gifts with IS_COLLECT = true (direct coin sends)
     let addGiftCoin = getOne?.raw
-      ?.filter((data) => data.IS_COLLECT)
+      ?.filter((data) => data.IS_COLLECT === true)
       .reduce((sum, current) => {
-        return sum + current.COIN;
+        return sum + (current.COIN || 0);
       }, 0);
 
-    if (addGiftCoin) {
-      const data = { USER_ID, COIN: addGiftCoin };
-      await addCoin(data);
+    console.log("acceptCollectGiftService - Gifts to add coins:", getOne?.raw?.filter((data) => data.IS_COLLECT === true));
+    console.log("acceptCollectGiftService - Total coins to add:", addGiftCoin);
+    console.log("acceptCollectGiftService - USER_ID:", USER_ID);
+
+    if (addGiftCoin && addGiftCoin > 0) {
+      const coinData = { USER_ID, COIN: addGiftCoin };
+      console.log("acceptCollectGiftService - Calling addCoin with:", coinData);
+      const coinResult = await addCoin(coinData);
+      console.log("acceptCollectGiftService - addCoin result:", coinResult);
     }
 
     // send coin
