@@ -1,0 +1,70 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.removePlayerRoomByOwner = removePlayerRoomByOwner;
+const room_friend_play_entity_1 = require("src/repository/room-friend-play.entity");
+const auth_token_1 = require("src/middleware/auth.token");
+async function removePlayerRoomByOwner(io, socket, data) {
+    try {
+        const { Authtoken: token, ROOM_NAME: NAME, REMOVE_USER_ID: USER_ID } = JSON.parse(data);
+        if (!token) {
+            socket.emit('res:unauthorized', { message: 'You are not authorized to perform this action.' });
+        }
+        else {
+            const isAuthorized = await (0, auth_token_1.verifyAccessToken)(token);
+            if (!isAuthorized) {
+                socket.emit('res:unauthorized', { message: 'You are not authorized to perform this action.' });
+            }
+            else {
+                const getPlayer = await (0, room_friend_play_entity_1.findOne)({ NAME });
+                if (!getPlayer) {
+                    socket.emit('res:error-message', { message: 'Friend Play Room is not found.' });
+                }
+                else {
+                    // const currentUser = getPlayer.USERS.filter((data: any) => (data.USER_ID === USER_ID));
+                    const USER = getPlayer.USERS.filter((data) => (data.USER_ID !== USER_ID));
+                    const CURRENT_USER = getPlayer.USERS.find((data) => (data.USER_ID === USER_ID));
+                    let updated = await (0, room_friend_play_entity_1.updateAndReturnById)(getPlayer?.ID, { USERS: USER });
+                    const getUpdate = updated?.raw[0]?.USERS;
+                    io.of('/play-with-friend').to(CURRENT_USER.CONNECTION_ID)
+                        .emit("res:owner-remove-player-in-room-play-with-friend", {
+                        status: true,
+                        message: "Successfully remove friend in room.",
+                        removePlayer_ByOwner_In_FriendPlay: {
+                            USERS: getUpdate,
+                            ROOM_ID: getPlayer?.ID,
+                            OWNER_ID: isAuthorized?.ID,
+                            REMOVE_USER_ID: USER_ID
+                        }
+                    });
+                    for (let index = 0; index < getUpdate.length; index++) {
+                        const connectionId = getUpdate[index].CONNECTION_ID;
+                        io.of('/play-with-friend').to(connectionId)
+                            .emit("res:owner-remove-player-in-room-play-with-friend", {
+                            status: true,
+                            message: "Successfully remove friend in room.",
+                            removePlayer_ByOwner_In_FriendPlay: {
+                                USERS: getUpdate,
+                                ROOM_ID: getPlayer?.ID,
+                                OWNER_ID: isAuthorized?.ID,
+                                REMOVE_USER_ID: USER_ID
+                            }
+                        });
+                    }
+                    socket.emit('res:owner-remove-player-in-room-play-with-friend', {
+                        status: true,
+                        message: "Successfully remove friend in room.",
+                        removePlayer_ByOwner_In_FriendPlay: {
+                            USERS: getUpdate,
+                            ROOM_ID: getPlayer?.ID,
+                            OWNER_ID: isAuthorized?.ID,
+                            REMOVE_USER_ID: USER_ID
+                        }
+                    });
+                }
+            }
+        }
+    }
+    catch (error) {
+        socket.emit('res:error-message', { status: false, message: error?.message ?? "Unknown Error." });
+    }
+}
