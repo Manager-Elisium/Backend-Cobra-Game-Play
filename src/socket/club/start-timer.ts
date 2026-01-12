@@ -2,7 +2,7 @@ import { Socket } from "socket.io";
 import { verifyAccessToken } from "src/middleware/auth.token";
 import { createClubPlay } from "src/repository/room-club-play.entity";
 import axios from "axios";
-const url = "http://192.168.1.46:3005";
+const url = "http://43.204.102.183:3005";
 // import { getOneTable, getUserAndClubById, updateAndReturnByIdTable, updateTable } from "src/repository/club-table.repository";
 
 async function startTimerClubPlay(io: any, socket: Socket, data: any) {

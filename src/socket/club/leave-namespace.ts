@@ -19,7 +19,7 @@ async function leaveNameSpaceClubPlay(io: any, socket: Socket, data: any) {
         });
       } else {
         const getUser = await axios.get(
-          `http://192.168.1.46:3000/user/auth/user-detail`,
+          `http://43.204.102.183:3000/user/auth/user-detail`,
           {
             headers: {
               "Content-Type": "application/json",

@@ -136,7 +136,7 @@ async function listCollectGiftService(data: any) {
     const userIdsString = getUserId.join(",");
     const reqBody = await encrypt(JSON.stringify({ USER_IDS: userIdsString }));
     const getUser = await axios.post(
-      `http://192.168.1.46:3000/user/auth/list-user-details`,
+      `http://43.204.102.183:3000/user/auth/list-user-details`,
       { public_key: reqBody.public_key, content: reqBody.content },
       {
         headers: {

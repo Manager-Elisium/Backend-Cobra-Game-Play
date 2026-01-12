@@ -10,8 +10,8 @@ import { getXP, getXPForSeason } from "src/util/game-winner";
 async function getSeasonService(data: any) {
   try {
     const { USER_ID } = data;
-    // http://192.168.1.46:3001/season/get-season-reward
-    // http://192.168.1.46:3001/season/get-season-reward
+    // http://43.204.102.183:3001/season/get-season-reward
+    // http://43.204.102.183:3001/season/get-season-reward
     const getOne = await getOneUserRecord({ USER_ID });
     if (!getOne) {
       throw new StandardError(
@@ -20,7 +20,7 @@ async function getSeasonService(data: any) {
       );
     }
     const listOfSeasson = await axios.get(
-      `http://192.168.1.46:3001/season/get-season-reward`,
+      `http://43.204.102.183:3001/season/get-season-reward`,
       {
         headers: {
           "Content-Type": "application/json",
@@ -91,7 +91,7 @@ async function getSeasonService(data: any) {
 async function buySeasonPassService(data: any) {
   try {
     const { USER_ID } = data;
-    // http://192.168.1.46:3001/season/get-season-reward
+    // http://43.204.102.183:3001/season/get-season-reward
     const getOne = await getOneUserRecord({ USER_ID });
     if (!getOne) {
       throw new StandardError(
@@ -116,7 +116,7 @@ async function buySeasonPassService(data: any) {
 async function collectSeasonRewardService(data: any) {
   try {
     const { USER_ID, seasonCollected, seasonDiamond } = data;
-    // http://192.168.1.46:3001/season/get-season-reward
+    // http://43.204.102.183:3001/season/get-season-reward
     const getOne = await getOneUserRecord({ USER_ID });
     if (!getOne) {
       throw new StandardError(

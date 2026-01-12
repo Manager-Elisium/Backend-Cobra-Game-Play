@@ -1,5 +1,5 @@
 import { getOneUserRecord, updateUserRecord } from "src/api/repository/user.repository";
-const url = 'http://192.168.1.46:3005';
+const url = 'http://43.204.102.183:3005';
 import axios from 'axios';
 
 async function instantGameWinner(userIdList: any) {

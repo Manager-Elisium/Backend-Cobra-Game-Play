@@ -14,7 +14,7 @@ async function initPageLoad(userId: string, token: string) {
     getUser = await createUserRecord({ USER_ID: userId });
     try {
       const friendListCoin = await axios.get(
-        `http://192.168.1.46:3003/friend/get-friend-id-list`,
+        `http://43.204.102.183:3003/friend/get-friend-id-list`,
         {
           headers: {
             "Content-Type": "application/json",
@@ -29,7 +29,7 @@ async function initPageLoad(userId: string, token: string) {
         COIN: 50,
       }));
       const listOfDailyReward = await axios.get(
-        `http://192.168.1.46:3001/reward/list`,
+        `http://43.204.102.183:3001/reward/list`,
         {
           headers: {
             "Content-Type": "application/json",
@@ -51,7 +51,7 @@ async function initPageLoad(userId: string, token: string) {
             }
       );
       const listOfDailyMission = await axios.get(
-        `http://192.168.1.46:3001/mission/list`,
+        `http://43.204.102.183:3001/mission/list`,
         {
           headers: {
             "Content-Type": "application/json",
@@ -99,7 +99,7 @@ async function initPageLoad(userId: string, token: string) {
       );
       if (isStartAfter30Days > 29) {
         const listOfDailyReward = await axios.get(
-          `http://192.168.1.46:3001/reward/list`,
+          `http://43.204.102.183:3001/reward/list`,
           {
             headers: {
               "Content-Type": "application/json",
@@ -148,7 +148,7 @@ async function initPageLoad(userId: string, token: string) {
 
         if (isDiffernce > 0) {
           const friendListCoin = await axios.get(
-            `http://192.168.1.46:3003/friend/get-friend-id-list`,
+            `http://43.204.102.183:3003/friend/get-friend-id-list`,
             {
               headers: {
                 "Content-Type": "application/json",
@@ -217,7 +217,7 @@ async function initPageLoad(userId: string, token: string) {
           console.log(getDailyTask);
 
           const listOfDailyMission = await axios.get(
-            `http://192.168.1.46:3001/mission/list`,
+            `http://43.204.102.183:3001/mission/list`,
             {
               headers: {
                 "Content-Type": "application/json",

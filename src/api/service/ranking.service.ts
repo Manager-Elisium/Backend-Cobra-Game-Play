@@ -84,7 +84,7 @@ async function getRankingService(data: any) {
       try {
         console.log(listRankingUserId);
         let userList = await axios.post(
-          `http://192.168.1.46:3003/friend/list-user-details`,
+          `http://43.204.102.183:3003/friend/list-user-details`,
           {
             userId: listRankingUserId,
           },
@@ -210,7 +210,7 @@ async function getRankingService(data: any) {
     } else if (userType === "country") {
       try {
         let userList = await axios.get(
-          `http://192.168.1.46:3003/friend/country-user-list/${country}`,
+          `http://43.204.102.183:3003/friend/country-user-list/${country}`,
           {
             headers: {
               "Content-Type": "application/json",
@@ -266,7 +266,7 @@ async function getRankingService(data: any) {
     } else {
       try {
         let friendList = await axios.get(
-          `http://192.168.1.46:3003/friend/my-friend-list/${USER_ID}`,
+          `http://43.204.102.183:3003/friend/my-friend-list/${USER_ID}`,
           {
             headers: {
               "Content-Type": "application/json",

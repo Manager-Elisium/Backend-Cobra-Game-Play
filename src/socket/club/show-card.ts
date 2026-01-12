@@ -7,7 +7,7 @@ import {
 import axios from "axios";
 import { clubGameWinner } from "src/util/game-winner";
 import orderBy from "lodash/orderBy";
-const url = "http://192.168.1.46:3005";
+const url = "http://43.204.102.183:3005";
 
 async function showCardClubPlay(io: any, socket: Socket, data: any) {
   try {
