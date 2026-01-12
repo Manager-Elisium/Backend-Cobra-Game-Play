@@ -16,6 +16,7 @@ const show_card_1 = require("./lobby/show-card");
 const chat_room_1 = require("./lobby/chat-room");
 const device_pause_1 = require("./lobby/device-pause");
 const device_resume_1 = require("./lobby/device-resume");
+const state_sync_1 = require("./lobby/state-sync");
 function setupLobbyNamespace(io, namespace) {
     namespace.on('connection', (socket) => {
         console.log(`A client connected to namespace: ${namespace.name}`);
@@ -38,6 +39,9 @@ function setupLobbyNamespace(io, namespace) {
         // device pause/resume
         socket.on('req:device-paused-lobby-play', (data) => (0, device_pause_1.devicePausedLobbyPlay)(io, socket, data));
         socket.on('req:device-resumed-lobby-play', (data) => (0, device_resume_1.deviceResumedLobbyPlay)(io, socket, data));
+        // state synchronization (production-ready features)
+        socket.on('req:sync-state-lobby-play', (data) => (0, state_sync_1.stateSyncLobbyPlay)(io, socket, data));
+        socket.on('req:full-state-lobby-play', (data) => (0, state_sync_1.fullStateLobbyPlay)(io, socket, data));
         // disconnect method
         socket.on('req:leave-namespace-lobby-play', (data) => (0, leave_namespace_1.leaveNameSpaceLobbyPlay)(io, socket, data));
         socket.on('disconnect', () => (0, disconnect_1.disconnectLobbyPlay)(io, socket)); // TODO -- Array New

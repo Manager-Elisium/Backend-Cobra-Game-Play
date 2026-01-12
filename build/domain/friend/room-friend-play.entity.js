@@ -63,6 +63,26 @@ __decorate([
     __metadata("design:type", String)
 ], RoomFriendPlay.prototype, "CURRENT_TURN", void 0);
 __decorate([
+    (0, typeorm_1.Column)({ type: 'int', default: 0 }),
+    __metadata("design:type", Number)
+], RoomFriendPlay.prototype, "TURN_SEQUENCE", void 0);
+__decorate([
+    (0, typeorm_1.Column)({ nullable: true }),
+    __metadata("design:type", String)
+], RoomFriendPlay.prototype, "GAME_PHASE", void 0);
+__decorate([
+    (0, typeorm_1.Column)({ type: 'int', default: 30 }),
+    __metadata("design:type", Number)
+], RoomFriendPlay.prototype, "TIMER", void 0);
+__decorate([
+    (0, typeorm_1.Column)({ nullable: true }),
+    __metadata("design:type", String)
+], RoomFriendPlay.prototype, "DISTRIBUTED_CARD_PLAYER", void 0);
+__decorate([
+    (0, typeorm_1.Column)({ nullable: true }),
+    __metadata("design:type", String)
+], RoomFriendPlay.prototype, "WINNER_USER_ID", void 0);
+__decorate([
     (0, typeorm_1.Column)({ type: 'jsonb', nullable: true }),
     __metadata("design:type", Object)
 ], RoomFriendPlay.prototype, "GAME_DECK", void 0);

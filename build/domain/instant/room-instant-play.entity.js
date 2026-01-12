@@ -50,6 +50,26 @@ __decorate([
     __metadata("design:type", String)
 ], RoomInstantPlay.prototype, "CURRENT_TURN", void 0);
 __decorate([
+    (0, typeorm_1.Column)({ type: 'int', default: 0 }),
+    __metadata("design:type", Number)
+], RoomInstantPlay.prototype, "TURN_SEQUENCE", void 0);
+__decorate([
+    (0, typeorm_1.Column)({ nullable: true }),
+    __metadata("design:type", String)
+], RoomInstantPlay.prototype, "GAME_PHASE", void 0);
+__decorate([
+    (0, typeorm_1.Column)({ type: 'int', default: 30 }),
+    __metadata("design:type", Number)
+], RoomInstantPlay.prototype, "TIMER", void 0);
+__decorate([
+    (0, typeorm_1.Column)({ nullable: true }),
+    __metadata("design:type", String)
+], RoomInstantPlay.prototype, "DISTRIBUTED_CARD_PLAYER", void 0);
+__decorate([
+    (0, typeorm_1.Column)({ nullable: true }),
+    __metadata("design:type", String)
+], RoomInstantPlay.prototype, "WINNER_USER_ID", void 0);
+__decorate([
     (0, typeorm_1.Column)({ type: 'jsonb', nullable: true }),
     __metadata("design:type", Object)
 ], RoomInstantPlay.prototype, "GAME_DECK", void 0);

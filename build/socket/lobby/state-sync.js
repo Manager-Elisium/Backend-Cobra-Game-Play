@@ -1,23 +1,23 @@
-import { Socket } from 'socket.io';
-import { verifyAccessToken } from 'src/middleware/auth.token';
-import { findOne } from 'src/repository/room-friend-play.entity';
-
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.fullStateLobbyPlay = exports.stateSyncLobbyPlay = void 0;
+const auth_token_1 = require("src/middleware/auth.token");
+const room_lobby_play_entity_1 = require("src/repository/room-lobby-play.entity");
 /**
  * Handle state synchronization request from Unity client
  * Returns current room state for validation
  */
-async function stateSyncFriendPlay(io: any, socket: Socket, data: any) {
+async function stateSyncLobbyPlay(io, socket, data) {
     try {
         // Parse request data
-        let parsedData: any = {};
+        let parsedData = {};
         try {
             parsedData = JSON.parse(data);
-        } catch (e) {
+        }
+        catch (e) {
             parsedData = data;
         }
-
         const { Authtoken: token, ROOM_NAME: roomName, localTurnSequence } = parsedData;
-
         // Verify auth token
         if (!token) {
             socket.emit('res:unauthorized', JSON.stringify({
@@ -26,8 +26,7 @@ async function stateSyncFriendPlay(io: any, socket: Socket, data: any) {
             }));
             return;
         }
-
-        const isAuthorized = await verifyAccessToken(token) as any;
+        const isAuthorized = await (0, auth_token_1.verifyAccessToken)(token);
         if (!isAuthorized) {
             socket.emit('res:unauthorized', JSON.stringify({
                 status: false,
@@ -35,9 +34,8 @@ async function stateSyncFriendPlay(io: any, socket: Socket, data: any) {
             }));
             return;
         }
-
         // Get room state
-        const room = await findOne({ ID: roomName });
+        const room = await (0, room_lobby_play_entity_1.findOne)({ ID: roomName });
         if (!room) {
             socket.emit('res:error-message', JSON.stringify({
                 status: false,
@@ -45,47 +43,43 @@ async function stateSyncFriendPlay(io: any, socket: Socket, data: any) {
             }));
             return;
         }
-
         // Calculate active player count (not left)
-        const activePlayers = room.USERS?.filter((user: any) => !user.IS_LEAVE_ROOM) || [];
+        const activePlayers = room.USERS?.filter((user) => !user.IS_LEAVE_ROOM) || [];
         const playerCount = activePlayers.length;
-
         // Send state sync response
-        socket.emit('res:sync-state-play-with-friend', JSON.stringify({
+        socket.emit('res:sync-state-lobby-play', JSON.stringify({
             status: true,
             serverTurnSequence: room.TURN_SEQUENCE || 0,
             currentTurnId: room.CURRENT_TURN || '',
             playerCount: playerCount
         }));
-
-        console.log(`🔄 State sync sent to ${isAuthorized.ID} in room ${roomName} (Friend Play)`);
+        console.log(`🔄 State sync sent to ${isAuthorized.ID} in room ${roomName} (Lobby Play)`);
         console.log(`   Local sequence: ${localTurnSequence}, Server sequence: ${room.TURN_SEQUENCE || 0}`);
-
-    } catch (error) {
-        console.error(`State Sync Error (Friend Play):`, error);
+    }
+    catch (error) {
+        console.error(`State Sync Error (Lobby Play):`, error);
         socket.emit('res:error-message', JSON.stringify({
             status: false,
             message: error?.message ?? 'State sync failed'
         }));
     }
 }
-
+exports.stateSyncLobbyPlay = stateSyncLobbyPlay;
 /**
  * Handle full state update request from Unity client
  * Returns complete room state for recovery
  */
-async function fullStateFriendPlay(io: any, socket: Socket, data: any) {
+async function fullStateLobbyPlay(io, socket, data) {
     try {
         // Parse request data
-        let parsedData: any = {};
+        let parsedData = {};
         try {
             parsedData = JSON.parse(data);
-        } catch (e) {
+        }
+        catch (e) {
             parsedData = data;
         }
-
         const { Authtoken: token, ROOM_NAME: roomName } = parsedData;
-
         // Verify auth token
         if (!token) {
             socket.emit('res:unauthorized', JSON.stringify({
@@ -94,8 +88,7 @@ async function fullStateFriendPlay(io: any, socket: Socket, data: any) {
             }));
             return;
         }
-
-        const isAuthorized = await verifyAccessToken(token) as any;
+        const isAuthorized = await (0, auth_token_1.verifyAccessToken)(token);
         if (!isAuthorized) {
             socket.emit('res:unauthorized', JSON.stringify({
                 status: false,
@@ -103,9 +96,8 @@ async function fullStateFriendPlay(io: any, socket: Socket, data: any) {
             }));
             return;
         }
-
         // Get complete room state
-        const room = await findOne({ ID: roomName });
+        const room = await (0, room_lobby_play_entity_1.findOne)({ ID: roomName });
         if (!room) {
             socket.emit('res:error-message', JSON.stringify({
                 status: false,
@@ -113,9 +105,8 @@ async function fullStateFriendPlay(io: any, socket: Socket, data: any) {
             }));
             return;
         }
-
         // Send full state response
-        socket.emit('res:full-state-play-with-friend', JSON.stringify({
+        socket.emit('res:full-state-lobby-play', JSON.stringify({
             status: true,
             ROOM_NAME: room.ID,
             CURRENT_TURN: room.CURRENT_TURN,
@@ -127,16 +118,14 @@ async function fullStateFriendPlay(io: any, socket: Socket, data: any) {
             ROUND_WINNER: room.WINNER_USER_ID || '',
             TIMER: room.TIMER || 30
         }));
-
-        console.log(`📥 Full state sent to ${isAuthorized.ID} in room ${roomName} (Friend Play)`);
-
-    } catch (error) {
-        console.error(`Full State Error (Friend Play):`, error);
+        console.log(`📥 Full state sent to ${isAuthorized.ID} in room ${roomName} (Lobby Play)`);
+    }
+    catch (error) {
+        console.error(`Full State Error (Lobby Play):`, error);
         socket.emit('res:error-message', JSON.stringify({
             status: false,
             message: error?.message ?? 'Full state update failed'
         }));
     }
 }
-
-export { stateSyncFriendPlay, fullStateFriendPlay };
+exports.fullStateLobbyPlay = fullStateLobbyPlay;

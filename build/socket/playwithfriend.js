@@ -23,6 +23,7 @@ const leave_namespace_1 = require("./friend/leave-namespace");
 const chat_room_1 = require("./friend/chat-room");
 const device_pause_1 = require("./friend/device-pause");
 const device_resume_1 = require("./friend/device-resume");
+const state_sync_1 = require("./friend/state-sync");
 function setupPlayWithFriendNamespace(io, namespace) {
     namespace.on('connection', (socket) => {
         console.log(`A client connected to namespace: ${namespace.name}`);
@@ -52,6 +53,9 @@ function setupPlayWithFriendNamespace(io, namespace) {
         // device pause/resume
         socket.on('req:device-paused-play-with-friend', (data) => (0, device_pause_1.devicePausedFriendPlay)(io, socket, data));
         socket.on('req:device-resumed-play-with-friend', (data) => (0, device_resume_1.deviceResumedFriendPlay)(io, socket, data));
+        // state synchronization (production-ready features)
+        socket.on('req:sync-state-play-with-friend', (data) => (0, state_sync_1.stateSyncFriendPlay)(io, socket, data));
+        socket.on('req:full-state-play-with-friend', (data) => (0, state_sync_1.fullStateFriendPlay)(io, socket, data));
         // disconnect method
         socket.on('req:leave-namespace-instant-play', (data) => (0, leave_namespace_1.leaveNameSpaceFriendPlay)(io, socket, data));
         socket.on('disconnect', () => (0, disconnect_1.disconnectFriendPlay)(io, socket)); // TOdo

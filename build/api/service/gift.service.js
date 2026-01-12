@@ -18,10 +18,8 @@ async function getPlayerGiftService(data) {
         if (!getOne) {
             throw new standard_error_1.default(error_type_1.ErrorCodes.API_VALIDATION_ERROR, "User Record is not found.");
         }
-        const COIN_PER_GIFT = 50;
-        const totalCoinNeeded = SEND_COIN_USERS.length * COIN_PER_GIFT;
-        const isAvailableBalance = getOne?.CURRENT_COIN - totalCoinNeeded;
-        if (isAvailableBalance < 0) {
+        const isAvailableBalance = getOne?.CURRENT_COIN - SEND_COIN_USERS.length;
+        if (!isAvailableBalance) {
             throw new standard_error_1.default(error_type_1.ErrorCodes.API_VALIDATION_ERROR, "Insufficient Balance.");
         }
         if (isSendCoin) {

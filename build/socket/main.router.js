@@ -4,6 +4,7 @@ exports.setupMainNamespace = void 0;
 const online_1 = require("./main/online");
 const disconnect_1 = require("./main/disconnect");
 const club_1 = require("./main/club");
+const ping_1 = require("./main/ping");
 function setupMainNamespace(io, namespace) {
     namespace.on('connection', (socket) => {
         console.log(`[COBRA-GAME-PLAY] ==========================================`);
@@ -15,6 +16,8 @@ function setupMainNamespace(io, namespace) {
         console.log(`[COBRA-GAME-PLAY] ==========================================`);
         // Event handlers specific to this namespace
         socket.on('req:online', (data) => (0, online_1.onlineUser)(socket, data));
+        // Ping/Pong for latency measurement
+        socket.on('req:ping', (data) => (0, ping_1.pingHandler)(socket, data));
         socket.on('req:club-joint', (data) => (0, club_1.clubJoint)(socket, data));
         socket.on('req:club-leave', (data) => (0, club_1.clubLeave)(socket, data));
         // disconnect method

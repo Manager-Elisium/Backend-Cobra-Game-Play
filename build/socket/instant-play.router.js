@@ -16,6 +16,7 @@ const leave_namespace_1 = require("./instant/leave-namespace");
 const chat_room_1 = require("./instant/chat-room");
 const device_pause_1 = require("./instant/device-pause");
 const device_resume_1 = require("./instant/device-resume");
+const state_sync_1 = require("./instant/state-sync");
 function setupInstantPlayNamespace(io, namespace) {
     namespace.on('connection', (socket) => {
         console.log(`A client connected to namespace: ${namespace.name}`);
@@ -38,6 +39,9 @@ function setupInstantPlayNamespace(io, namespace) {
         // device pause/resume
         socket.on('req:device-paused-instant-play', (data) => (0, device_pause_1.devicePausedInstantPlay)(io, socket, data));
         socket.on('req:device-resumed-instant-play', (data) => (0, device_resume_1.deviceResumedInstantPlay)(io, socket, data));
+        // state synchronization (production-ready features)
+        socket.on('req:sync-state-instant-play', (data) => (0, state_sync_1.stateSyncInstantPlay)(io, socket, data));
+        socket.on('req:full-state-instant-play', (data) => (0, state_sync_1.fullStateInstantPlay)(io, socket, data));
         // disconnect method
         socket.on('req:leave-namespace-instant-play', (data) => (0, leave_namespace_1.leaveNameSpaceInstantPlay)(io, socket, data));
         socket.on('disconnect', () => (0, disconnect_1.disconnectInstantPlay)(io, socket)); // TODO -- Array New

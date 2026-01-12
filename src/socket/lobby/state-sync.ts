@@ -122,7 +122,7 @@ async function fullStateLobbyPlay(io: any, socket: Socket, data: any) {
             PLAYERS: room.USERS,
             TURN_SEQUENCE: room.TURN_SEQUENCE || 0,
             GAME_PHASE: room.GAME_PHASE || 'playing',
-            CURRENT_ROUND: room.CURRENT_ROUND || 1,
+            CURRENT_ROUND: room.CURRENT_ROUND_NUMBER || 0,
             DEALER: room.DISTRIBUTED_CARD_PLAYER || '',
             ROUND_WINNER: room.WINNER_USER_ID || '',
             TIMER: room.TIMER || 30
