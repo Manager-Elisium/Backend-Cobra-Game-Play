@@ -5,6 +5,9 @@ export class RoomInstantPlay extends BaseEntity {
   @PrimaryGeneratedColumn("uuid", { name: "ID" })
   ID: string;
 
+  @Column({ unique: true, nullable: true })
+  NAME: string;
+
   @Column({ type: 'boolean', default: false })
   IS_GAME_FINISH: boolean;
 

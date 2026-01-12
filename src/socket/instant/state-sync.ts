@@ -36,8 +36,8 @@ async function stateSyncInstantPlay(io: any, socket: Socket, data: any) {
             return;
         }
 
-        // Get room state
-        const room = await findOne({ ID: roomName });
+        // Get room state (ROOM_NAME is actually the NAME field, not ID)
+        const room = await findOne({ NAME: roomName });
         if (!room) {
             socket.emit('res:error-message', JSON.stringify({
                 status: false,
@@ -104,8 +104,8 @@ async function fullStateInstantPlay(io: any, socket: Socket, data: any) {
             return;
         }
 
-        // Get complete room state
-        const room = await findOne({ ID: roomName });
+        // Get complete room state (ROOM_NAME is actually the NAME field, not ID)
+        const room = await findOne({ NAME: roomName });
         if (!room) {
             socket.emit('res:error-message', JSON.stringify({
                 status: false,

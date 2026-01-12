@@ -34,8 +34,8 @@ async function stateSyncFriendPlay(io, socket, data) {
             }));
             return;
         }
-        // Get room state
-        const room = await (0, room_friend_play_entity_1.findOne)({ ID: roomName });
+        // Get room state (ROOM_NAME is actually the NAME field, not ID)
+        const room = await (0, room_friend_play_entity_1.findOne)({ NAME: roomName });
         if (!room) {
             socket.emit('res:error-message', JSON.stringify({
                 status: false,
@@ -96,8 +96,8 @@ async function fullStateFriendPlay(io, socket, data) {
             }));
             return;
         }
-        // Get complete room state
-        const room = await (0, room_friend_play_entity_1.findOne)({ ID: roomName });
+        // Get complete room state (ROOM_NAME is actually the NAME field, not ID)
+        const room = await (0, room_friend_play_entity_1.findOne)({ NAME: roomName });
         if (!room) {
             socket.emit('res:error-message', JSON.stringify({
                 status: false,
