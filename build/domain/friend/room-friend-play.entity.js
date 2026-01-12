@@ -27,7 +27,7 @@ __decorate([
     __metadata("design:type", String)
 ], RoomFriendPlay.prototype, "ID", void 0);
 __decorate([
-    (0, typeorm_1.Column)({ unique: true }),
+    (0, typeorm_1.Column)({ unique: true, nullable: true }),
     __metadata("design:type", String)
 ], RoomFriendPlay.prototype, "NAME", void 0);
 __decorate([

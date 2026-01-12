@@ -5,7 +5,7 @@ export class RoomLobbyPlay extends BaseEntity {
   @PrimaryGeneratedColumn("uuid", { name: "ID" })
   ID: string;
 
-  @Column({ unique: true })
+  @Column({ unique: true, nullable: true })
   NAME: string;
 
   @Column({ type: 'boolean', default: false })
