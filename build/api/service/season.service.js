@@ -12,13 +12,13 @@ const game_winner_1 = require("src/util/game-winner");
 async function getSeasonService(data) {
     try {
         const { USER_ID } = data;
-        // http://192.168.1.46:3001/season/get-season-reward
-        // http://192.168.1.46:3001/season/get-season-reward
+        // http://43.204.102.183:3001/season/get-season-reward
+        // http://43.204.102.183:3001/season/get-season-reward
         const getOne = await (0, user_repository_1.getOneUserRecord)({ USER_ID });
         if (!getOne) {
             throw new standard_error_1.default(error_type_1.ErrorCodes.API_VALIDATION_ERROR, "User Record is not found.");
         }
-        const listOfSeasson = await axios_1.default.get(`http://192.168.1.46:3001/season/get-season-reward`, {
+        const listOfSeasson = await axios_1.default.get(`http://43.204.102.183:3001/season/get-season-reward`, {
             headers: {
                 "Content-Type": "application/json",
             },
@@ -72,7 +72,7 @@ exports.getSeasonService = getSeasonService;
 async function buySeasonPassService(data) {
     try {
         const { USER_ID } = data;
-        // http://192.168.1.46:3001/season/get-season-reward
+        // http://43.204.102.183:3001/season/get-season-reward
         const getOne = await (0, user_repository_1.getOneUserRecord)({ USER_ID });
         if (!getOne) {
             throw new standard_error_1.default(error_type_1.ErrorCodes.API_VALIDATION_ERROR, "User Record is not found.");
@@ -90,7 +90,7 @@ exports.buySeasonPassService = buySeasonPassService;
 async function collectSeasonRewardService(data) {
     try {
         const { USER_ID, seasonCollected, seasonDiamond } = data;
-        // http://192.168.1.46:3001/season/get-season-reward
+        // http://43.204.102.183:3001/season/get-season-reward
         const getOne = await (0, user_repository_1.getOneUserRecord)({ USER_ID });
         if (!getOne) {
             throw new standard_error_1.default(error_type_1.ErrorCodes.API_VALIDATION_ERROR, "User Record is not found.");

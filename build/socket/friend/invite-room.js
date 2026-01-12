@@ -65,7 +65,7 @@ async function sendRoomByOwner(io, socket, data) {
                             },
                         });
                         // TODO : Redis
-                        const getUser = await axios_1.default.get(`http://192.168.1.46:3000/user/auth/user-detail`, {
+                        const getUser = await axios_1.default.get(`http://43.204.102.183:3000/user/auth/user-detail`, {
                             headers: {
                                 "Content-Type": "application/json",
                                 Authorization: `Bearer ${token}`,

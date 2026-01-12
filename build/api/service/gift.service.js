@@ -18,8 +18,10 @@ async function getPlayerGiftService(data) {
         if (!getOne) {
             throw new standard_error_1.default(error_type_1.ErrorCodes.API_VALIDATION_ERROR, "User Record is not found.");
         }
-        const isAvailableBalance = getOne?.CURRENT_COIN - SEND_COIN_USERS.length;
-        if (!isAvailableBalance) {
+        const COIN_PER_GIFT = 50;
+        const totalCoinNeeded = SEND_COIN_USERS.length * COIN_PER_GIFT;
+        const isAvailableBalance = getOne?.CURRENT_COIN - totalCoinNeeded;
+        if (isAvailableBalance < 0) {
             throw new standard_error_1.default(error_type_1.ErrorCodes.API_VALIDATION_ERROR, "Insufficient Balance.");
         }
         if (isSendCoin) {
@@ -120,7 +122,7 @@ async function listCollectGiftService(data) {
         }
         const userIdsString = getUserId.join(",");
         const reqBody = await (0, encrypt_1.encrypt)(JSON.stringify({ USER_IDS: userIdsString }));
-        const getUser = await axios_1.default.post(`http://192.168.1.46:3000/user/auth/list-user-details`, { public_key: reqBody.public_key, content: reqBody.content }, {
+        const getUser = await axios_1.default.post(`http://43.204.102.183:3000/user/auth/list-user-details`, { public_key: reqBody.public_key, content: reqBody.content }, {
             headers: {
                 "Content-Type": "application/json",
                 Authorization: `${authToken}`,

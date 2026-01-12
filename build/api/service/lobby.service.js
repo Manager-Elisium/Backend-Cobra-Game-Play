@@ -9,7 +9,7 @@ const error_type_1 = require("src/common/error-type");
 const axios_1 = __importDefault(require("axios"));
 async function listLobbyService() {
     try {
-        const listOfLobby = await axios_1.default.get(`http://192.168.1.46:3001/lobby/list`, {
+        const listOfLobby = await axios_1.default.get(`http://43.204.102.183:3001/lobby/list`, {
             headers: {
                 "Content-Type": "application/json",
             },

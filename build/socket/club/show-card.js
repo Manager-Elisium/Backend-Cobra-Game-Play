@@ -9,7 +9,7 @@ const room_club_play_entity_1 = require("src/repository/room-club-play.entity");
 const axios_1 = __importDefault(require("axios"));
 const game_winner_1 = require("src/util/game-winner");
 const orderBy_1 = __importDefault(require("lodash/orderBy"));
-const url = "http://192.168.1.46:3005";
+const url = "http://43.204.102.183:3005";
 async function showCardClubPlay(io, socket, data) {
     try {
         const { Authtoken: token, ROOM_NAME: ID } = JSON.parse(data);

@@ -14,7 +14,7 @@ async function initPageLoad(userId, token) {
     if (!getUser) {
         getUser = await (0, user_repository_1.createUserRecord)({ USER_ID: userId });
         try {
-            const friendListCoin = await axios_1.default.get(`http://192.168.1.46:3003/friend/get-friend-id-list`, {
+            const friendListCoin = await axios_1.default.get(`http://43.204.102.183:3003/friend/get-friend-id-list`, {
                 headers: {
                     "Content-Type": "application/json",
                     Authorization: `Bearer ${token}`,
@@ -26,7 +26,7 @@ async function initPageLoad(userId, token) {
                 IS_REQUEST_COIN: false,
                 COIN: 50,
             }));
-            const listOfDailyReward = await axios_1.default.get(`http://192.168.1.46:3001/reward/list`, {
+            const listOfDailyReward = await axios_1.default.get(`http://43.204.102.183:3001/reward/list`, {
                 headers: {
                     "Content-Type": "application/json",
                 },
@@ -43,7 +43,7 @@ async function initPageLoad(userId, token) {
                     IS_COLLECT: false,
                     IS_TODAY_TASK: false,
                 });
-            const listOfDailyMission = await axios_1.default.get(`http://192.168.1.46:3001/mission/list`, {
+            const listOfDailyMission = await axios_1.default.get(`http://43.204.102.183:3001/mission/list`, {
                 headers: {
                     "Content-Type": "application/json",
                 },
@@ -82,7 +82,7 @@ async function initPageLoad(userId, token) {
             let currentDate = (0, moment_1.default)(new Date()).startOf("days");
             const isStartAfter30Days = (0, moment_1.default)(currentDate).diff(createDailyRewardDate, "day");
             if (isStartAfter30Days > 29) {
-                const listOfDailyReward = await axios_1.default.get(`http://192.168.1.46:3001/reward/list`, {
+                const listOfDailyReward = await axios_1.default.get(`http://43.204.102.183:3001/reward/list`, {
                     headers: {
                         "Content-Type": "application/json",
                     },
@@ -123,7 +123,7 @@ async function initPageLoad(userId, token) {
                 // console.log(moment(currentDate).diff(todayLoginDate, 'day'));
                 const isDiffernce = (0, moment_1.default)(currentDate).diff(todayLoginDate, "days");
                 if (isDiffernce > 0) {
-                    const friendListCoin = await axios_1.default.get(`http://192.168.1.46:3003/friend/get-friend-id-list`, {
+                    const friendListCoin = await axios_1.default.get(`http://43.204.102.183:3003/friend/get-friend-id-list`, {
                         headers: {
                             "Content-Type": "application/json",
                             Authorization: `Bearer ${token}`,
@@ -186,7 +186,7 @@ async function initPageLoad(userId, token) {
                         }
                     });
                     console.log(getDailyTask);
-                    const listOfDailyMission = await axios_1.default.get(`http://192.168.1.46:3001/mission/list`, {
+                    const listOfDailyMission = await axios_1.default.get(`http://43.204.102.183:3001/mission/list`, {
                         headers: {
                             "Content-Type": "application/json",
                         },

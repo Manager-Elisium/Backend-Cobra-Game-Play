@@ -11,7 +11,7 @@ const user_repository_1 = require("../repository/user.repository");
 async function listShopService(shopType) {
     try {
         // 13.127.87.96
-        const listOfShop = await axios_1.default.get(`http://192.168.1.46:3001/shop/list/${shopType}`, {
+        const listOfShop = await axios_1.default.get(`http://43.204.102.183:3001/shop/list/${shopType}`, {
             headers: {
                 "Content-Type": "application/json",
             },
@@ -26,7 +26,7 @@ exports.listShopService = listShopService;
 async function buyShopService(data) {
     try {
         const { USER_ID, SHOP_ID } = data;
-        const getShopById = await axios_1.default.get(`http://192.168.1.46:3001/shop/get-shop-for-user/${SHOP_ID}`, {
+        const getShopById = await axios_1.default.get(`http://43.204.102.183:3001/shop/get-shop-for-user/${SHOP_ID}`, {
             headers: {
                 "Content-Type": "application/json",
             },

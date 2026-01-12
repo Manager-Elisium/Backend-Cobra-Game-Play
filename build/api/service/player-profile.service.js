@@ -64,7 +64,7 @@ async function getBadgeService(data) {
     try {
         const { USER_ID } = data;
         const getOne = await (0, user_repository_1.getOneUserRecord)({ USER_ID });
-        const getBadge = await axios_1.default.get(`http://192.168.1.46:3001/badge/list`);
+        const getBadge = await axios_1.default.get(`http://43.204.102.183:3001/badge/list`);
         const listBadge = getBadge?.data?.data?.data ?? [];
         return listBadge?.map((data) => {
             const getUserBadge = getOne?.BADGES?.find((user) => user?.ID === data?.ID);
@@ -101,7 +101,7 @@ async function getAchievementService(data) {
     try {
         const { USER_ID } = data;
         const getOne = await (0, user_repository_1.getOneUserRecord)({ USER_ID });
-        const getBadge = await axios_1.default.get(`http://192.168.1.46:3001/achievement/list`);
+        const getBadge = await axios_1.default.get(`http://43.204.102.183:3001/achievement/list`);
         const listBadge = getBadge?.data?.data?.data ?? [];
         return listBadge?.map((data) => {
             const getUserBadge = getOne?.BADGES?.find((user) => user?.ID === data?.ID);

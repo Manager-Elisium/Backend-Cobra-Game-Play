@@ -5,7 +5,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.clubGameWinner = exports.lobbyGameWinner = exports.instantGameWinner = exports.getXPForSeason = exports.getXP = exports.getLevel = void 0;
 const user_repository_1 = require("src/api/repository/user.repository");
-const url = 'http://192.168.1.46:3005';
+const url = 'http://43.204.102.183:3005';
 const axios_1 = __importDefault(require("axios"));
 async function instantGameWinner(userIdList) {
     try {

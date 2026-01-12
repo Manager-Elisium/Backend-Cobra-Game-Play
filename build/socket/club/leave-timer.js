@@ -6,7 +6,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.leaveTimerClubPlay = void 0;
 const auth_token_1 = require("src/middleware/auth.token");
 const axios_1 = __importDefault(require("axios"));
-const url = "http://192.168.1.46:3005";
+const url = "http://43.204.102.183:3005";
 async function leaveTimerClubPlay(io, socket, data) {
     try {
         const { Authtoken: token, TABLE_ID } = JSON.parse(data);

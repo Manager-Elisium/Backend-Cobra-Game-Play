@@ -7,7 +7,7 @@ exports.startTimerClubPlay = void 0;
 const auth_token_1 = require("src/middleware/auth.token");
 const room_club_play_entity_1 = require("src/repository/room-club-play.entity");
 const axios_1 = __importDefault(require("axios"));
-const url = "http://192.168.1.46:3005";
+const url = "http://43.204.102.183:3005";
 // import { getOneTable, getUserAndClubById, updateAndReturnByIdTable, updateTable } from "src/repository/club-table.repository";
 async function startTimerClubPlay(io, socket, data) {
     try {

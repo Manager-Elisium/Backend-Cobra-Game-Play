@@ -16,7 +16,7 @@ async function getSettingProfileService(data) {
         if (!getOne) {
             throw new standard_error_1.default(error_type_1.ErrorCodes.API_VALIDATION_ERROR, "User Record is not found.");
         }
-        const getUser = await axios_1.default.get(`http://192.168.1.46:3003/auth/user-detail`, {
+        const getUser = await axios_1.default.get(`http://43.204.102.183:3003/auth/user-detail`, {
             headers: {
                 "Content-Type": "application/json",
                 Authorization: `${authToken}`,
