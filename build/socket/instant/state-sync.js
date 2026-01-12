@@ -43,9 +43,16 @@ async function stateSyncInstantPlay(io, socket, data) {
             }));
             return;
         }
-        // Calculate active player count (not left)
-        const activePlayers = room.USERS?.filter((user) => !user.IS_LEAVE_ROOM) || [];
-        const playerCount = activePlayers.length;
+        // Calculate active player count (not left) - with extra safety checks
+        let activePlayers = [];
+        let playerCount = 0;
+        if (room.USERS && Array.isArray(room.USERS)) {
+            activePlayers = room.USERS.filter((user) => user && !user.IS_LEAVE_ROOM);
+            playerCount = activePlayers.length;
+        }
+        else {
+            console.warn(`⚠️ Room ${roomName} has invalid USERS field:`, typeof room.USERS);
+        }
         // Send state sync response
         socket.emit('res:sync-state-instant-play', JSON.stringify({
             status: true,
@@ -105,12 +112,12 @@ async function fullStateInstantPlay(io, socket, data) {
             }));
             return;
         }
-        // Send full state response
+        // Send full state response with safety checks
         socket.emit('res:full-state-instant-play', JSON.stringify({
             status: true,
             ROOM_NAME: room.ID,
-            CURRENT_TURN: room.CURRENT_TURN,
-            PLAYERS: room.USERS,
+            CURRENT_TURN: room.CURRENT_TURN || '',
+            PLAYERS: Array.isArray(room.USERS) ? room.USERS : [],
             TURN_SEQUENCE: room.TURN_SEQUENCE || 0,
             GAME_PHASE: room.GAME_PHASE || 'playing',
             CURRENT_ROUND: room.CURRENT_ROUND_NUMBER || 0,
