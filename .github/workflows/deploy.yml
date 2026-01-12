@@ -1,0 +1,70 @@
+name: Deploy to Gameplay EC2
+
+on:
+  push:
+    branches:
+      - main
+      - master
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '18.x'
+
+    - name: Install dependencies
+      run: npm ci
+
+    - name: Build
+      run: npm run build
+
+    - name: Configure SSH
+      run: |
+        mkdir -p ~/.ssh
+        echo "${{ secrets.EC2_SSH_KEY }}" > ~/.ssh/ec2_key.pem
+        chmod 600 ~/.ssh/ec2_key.pem
+        ssh-keyscan -H ${{ secrets.EC2_GAMEPLAY_HOST }} >> ~/.ssh/known_hosts
+
+    - name: Copy files to EC2
+      run: |
+        FILES="build/ package.json package-lock.json"
+        [ -f .env ] && FILES="$FILES .env"
+        [ -f .env.production ] && FILES="$FILES .env.production"
+        tar -czf deploy.tar.gz $FILES
+        scp -i ~/.ssh/ec2_key.pem deploy.tar.gz ec2-user@${{ secrets.EC2_GAMEPLAY_HOST }}:~/app/
+
+    - name: Deploy on EC2
+      run: |
+        ssh -i ~/.ssh/ec2_key.pem ec2-user@${{ secrets.EC2_GAMEPLAY_HOST }} << 'ENDSSH'
+          set -e
+          
+          cd ~/app
+          
+          SERVICE_NAME="Backend-Cobra-Game-Play"
+          mkdir -p "$SERVICE_NAME"
+          cd "$SERVICE_NAME"
+          tar -xzf ../deploy.tar.gz
+          rm ../deploy.tar.gz
+          
+          # Install production dependencies
+          npm ci --production || npm install --production
+          
+          # Stop existing PM2 process
+          pm2 delete gameplay || true
+          
+          # Start service
+          pm2 start build/index.js --name "gameplay" --update-env
+          
+          # Save PM2 configuration
+          pm2 save
+          
+          pm2 list
+        ENDSSH
