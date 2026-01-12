@@ -84,7 +84,8 @@ async function devicePausedFriendPlay(io: any, socket: Socket, data: any) {
                     getUserPlayRank.unshift(isAuthorized.ID);
                 }
                 
-                let isLastPlayer = await getPlayer?.USERS?.filter((data: any) => (!data.IS_LEAVE_ROOM && data.TOTAL < 100));
+                // Get remaining players BEFORE marking as left (needed for turn calculation)
+                let isLastPlayerBeforeRemoval = await getPlayer?.USERS?.filter((data: any) => (!data.IS_LEAVE_ROOM && data.TOTAL < 100));
                 
                 // Mark the kicked player as left
                 for (let index = 0; index < getPlayer.USERS.length; index++) {
@@ -96,7 +97,7 @@ async function devicePausedFriendPlay(io: any, socket: Socket, data: any) {
                 }
                 
                 // Recalculate remaining players after marking as left
-                isLastPlayer = await getPlayer?.USERS?.filter((data: any) => (!data.IS_LEAVE_ROOM && data.TOTAL < 100));
+                let isLastPlayer = await getPlayer?.USERS?.filter((data: any) => (!data.IS_LEAVE_ROOM && data.TOTAL < 100));
                 
                 // Check if game should end (only 2 players left)
                 if (isLastPlayer.length <= 2) {
@@ -290,16 +291,57 @@ async function devicePausedFriendPlay(io: any, socket: Socket, data: any) {
                     // More than 2 players remaining - just mark as left and continue
                     const currentTurn = getPlayer?.CURRENT_TURN;
                     if (currentTurn === isAuthorized.ID) {
-                        const currentIndex = isLastPlayer?.findIndex((user: any) => user.USER_ID === isAuthorized.ID);
-                        const nextIndex = (currentIndex + 1) % isLastPlayer.length;
-                        const nextUserId = isLastPlayer[nextIndex]?.USER_ID;
-                        io.of('/play-with-friend').in(getPlayer?.ID).emit('res:next-turn-play-with-friend', {
-                            status: true,
-                            nextTurn_In_FriendPlay: {
-                                CURRENT_TURN: nextUserId
+                        // Find the index of the removed player in the list BEFORE removal
+                        const currentIndex = isLastPlayerBeforeRemoval?.findIndex((user: any) => user.USER_ID === isAuthorized.ID);
+                        if (currentIndex !== -1 && isLastPlayerBeforeRemoval && isLastPlayer && isLastPlayer.length > 0) {
+                            // Calculate the next player index in the original list (before removal)
+                            const nextIndexInOriginal = (currentIndex + 1) % isLastPlayerBeforeRemoval.length;
+                            const nextPlayerUserId = isLastPlayerBeforeRemoval[nextIndexInOriginal]?.USER_ID;
+                            
+                            // Verify the next player is still in the remaining players list
+                            const nextUserId = isLastPlayer.find((user: any) => user.USER_ID === nextPlayerUserId)?.USER_ID;
+                            
+                            if (nextUserId) {
+                                io.of('/play-with-friend').in(getPlayer?.ID).emit('res:next-turn-play-with-friend', {
+                                    status: true,
+                                    nextTurn_In_FriendPlay: {
+                                        CURRENT_TURN: nextUserId
+                                    }
+                                });
+                                await updateRoomById(getPlayer?.ID, { USERS: getPlayer.USERS, CURRENT_TURN: nextUserId, USER_WIN_RANK: getUserPlayRank } as RoomFriendPlay);
+                                console.log(`⏱️ Advanced turn to next player: ${nextUserId} after removing ${isAuthorized.ID}`);
+                            } else {
+                                // Fallback: use first remaining player if next player not found
+                                const fallbackUserId = isLastPlayer[0]?.USER_ID;
+                                if (fallbackUserId) {
+                                    io.of('/play-with-friend').in(getPlayer?.ID).emit('res:next-turn-play-with-friend', {
+                                        status: true,
+                                        nextTurn_In_FriendPlay: {
+                                            CURRENT_TURN: fallbackUserId
+                                        }
+                                    });
+                                    await updateRoomById(getPlayer?.ID, { USERS: getPlayer.USERS, CURRENT_TURN: fallbackUserId, USER_WIN_RANK: getUserPlayRank } as RoomFriendPlay);
+                                    console.log(`⏱️ Advanced turn to first remaining player (fallback): ${fallbackUserId} after removing ${isAuthorized.ID}`);
+                                } else {
+                                    console.log(`⏱️ No valid next player found after removing ${isAuthorized.ID}`);
+                                }
                             }
-                        });
-                        await updateRoomById(getPlayer?.ID, { USERS: getPlayer.USERS, CURRENT_TURN: nextUserId, USER_WIN_RANK: getUserPlayRank } as RoomFriendPlay);
+                        } else {
+                            // Fallback: use first remaining player
+                            const nextUserId = isLastPlayer?.[0]?.USER_ID;
+                            if (nextUserId) {
+                                io.of('/play-with-friend').in(getPlayer?.ID).emit('res:next-turn-play-with-friend', {
+                                    status: true,
+                                    nextTurn_In_FriendPlay: {
+                                        CURRENT_TURN: nextUserId
+                                    }
+                                });
+                                await updateRoomById(getPlayer?.ID, { USERS: getPlayer.USERS, CURRENT_TURN: nextUserId, USER_WIN_RANK: getUserPlayRank } as RoomFriendPlay);
+                                console.log(`⏱️ Advanced turn to first remaining player: ${nextUserId} after removing ${isAuthorized.ID}`);
+                            } else {
+                                console.log(`⏱️ No remaining players found for next turn after removing ${isAuthorized.ID}`);
+                            }
+                        }
                     } else {
                         await updateRoomById(getPlayer?.ID, { USERS: getPlayer.USERS, USER_WIN_RANK: getUserPlayRank } as RoomFriendPlay);
                     }
