@@ -3,8 +3,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.listShopService = listShopService;
-exports.buyShopService = buyShopService;
+exports.buyShopService = exports.listShopService = void 0;
 const standard_error_1 = __importDefault(require("src/common/standard-error"));
 const error_type_1 = require("src/common/error-type");
 const axios_1 = __importDefault(require("axios"));
@@ -12,7 +11,7 @@ const user_repository_1 = require("../repository/user.repository");
 async function listShopService(shopType) {
     try {
         // 13.127.87.96
-        const listOfShop = await axios_1.default.get(`http://65.2.149.164/shop/list/${shopType}`, {
+        const listOfShop = await axios_1.default.get(`http://192.168.1.46:3001/shop/list/${shopType}`, {
             headers: {
                 "Content-Type": "application/json",
             },
@@ -23,10 +22,11 @@ async function listShopService(shopType) {
         throw new standard_error_1.default(error_type_1.ErrorCodes.API_VALIDATION_ERROR, "Shop Service is not reachable.");
     }
 }
+exports.listShopService = listShopService;
 async function buyShopService(data) {
     try {
         const { USER_ID, SHOP_ID } = data;
-        const getShopById = await axios_1.default.get(`http://65.2.149.164/shop/get-shop-for-user/${SHOP_ID}`, {
+        const getShopById = await axios_1.default.get(`http://192.168.1.46:3001/shop/get-shop-for-user/${SHOP_ID}`, {
             headers: {
                 "Content-Type": "application/json",
             },
@@ -40,8 +40,8 @@ async function buyShopService(data) {
             }
             else {
                 updateUser = (await (0, user_repository_1.updateUserRecord)(getUser?.ID, {
-                    CURRENT_DIAMOND: (getShop?.VALUE ?? 0) + (getUser?.CURRENT_DIAMOND ?? 0),
-                    TOTAL_DIAMOND: (getShop?.VALUE ?? 0) + (getUser?.TOTAL_DIAMOND ?? 0),
+                    CURRENT_DIAMOND: getShop?.VALUE + getUser?.CURRENT_DIAMOND ?? 0,
+                    TOTAL_DIAMOND: getShop?.VALUE + getUser?.TOTAL_DIAMOND ?? 0,
                 }));
             }
         }
@@ -52,8 +52,8 @@ async function buyShopService(data) {
             }
             else {
                 updateUser = (await (0, user_repository_1.updateUserRecord)(getUser?.ID, {
-                    CURRENT_COIN: (getShop?.VALUE ?? 0) + (getUser?.CURRENT_COIN ?? 0),
-                    TOTAL_COIN: (getShop?.VALUE ?? 0) + (getUser?.TOTAL_COIN ?? 0),
+                    CURRENT_COIN: getShop?.VALUE + getUser?.CURRENT_COIN ?? 0,
+                    TOTAL_COIN: getShop?.VALUE + getUser?.TOTAL_COIN ?? 0,
                 }));
             }
         }
@@ -65,8 +65,8 @@ async function buyShopService(data) {
                 }
                 else {
                     updateUser = (await (0, user_repository_1.updateUserRecord)(getUser?.ID, {
-                        CURRENT_DIAMOND: (getShop?.VALUE ?? 0) + (getUser?.CURRENT_DIAMOND ?? 0),
-                        TOTAL_DIAMOND: (getShop?.VALUE ?? 0) + (getUser?.TOTAL_DIAMOND ?? 0),
+                        CURRENT_DIAMOND: getShop?.VALUE + getUser?.CURRENT_DIAMOND ?? 0,
+                        TOTAL_DIAMOND: getShop?.VALUE + getUser?.TOTAL_DIAMOND ?? 0,
                     }));
                 }
             }
@@ -77,8 +77,8 @@ async function buyShopService(data) {
                 }
                 else {
                     updateUser = (await (0, user_repository_1.updateUserRecord)(getUser?.ID, {
-                        CURRENT_COIN: (getShop?.VALUE ?? 0) + (getUser?.CURRENT_COIN ?? 0),
-                        TOTAL_COIN: (getShop?.VALUE ?? 0) + (getUser?.TOTAL_COIN ?? 0),
+                        CURRENT_COIN: getShop?.VALUE + getUser?.CURRENT_COIN ?? 0,
+                        TOTAL_COIN: getShop?.VALUE + getUser?.TOTAL_COIN ?? 0,
                     }));
                 }
             }
@@ -150,3 +150,4 @@ async function buyShopService(data) {
         throw new standard_error_1.default(error_type_1.ErrorCodes.API_VALIDATION_ERROR, error?.message ?? "Shop Service is not reachable.");
     }
 }
+exports.buyShopService = buyShopService;

@@ -13,7 +13,6 @@ exports.ClubPlay = void 0;
 const typeorm_1 = require("typeorm");
 let ClubPlay = class ClubPlay extends typeorm_1.BaseEntity {
 };
-exports.ClubPlay = ClubPlay;
 __decorate([
     (0, typeorm_1.PrimaryGeneratedColumn)("uuid", { name: "ID" }),
     __metadata("design:type", String)
@@ -106,6 +105,7 @@ __decorate([
     (0, typeorm_1.Column)('timestamp with time zone', { nullable: true }),
     __metadata("design:type", Date)
 ], ClubPlay.prototype, "GAME_FINISH_DATE", void 0);
-exports.ClubPlay = ClubPlay = __decorate([
+ClubPlay = __decorate([
     (0, typeorm_1.Entity)({ name: "CLUB_PLAY" })
 ], ClubPlay);
+exports.ClubPlay = ClubPlay;

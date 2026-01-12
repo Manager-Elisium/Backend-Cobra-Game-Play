@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.setupClubNamespace = setupClubNamespace;
+exports.setupClubNamespace = void 0;
 const online_1 = require("./club/online");
 const decided_turn_1 = require("./club/decided-turn");
 const chat_room_1 = require("./club/chat-room");
@@ -43,3 +43,4 @@ function setupClubNamespace(io, namespace) {
         socket.on('disconnect', () => (0, disconnect_1.disconnectClubPlay)(io, socket));
     });
 }
+exports.setupClubNamespace = setupClubNamespace;

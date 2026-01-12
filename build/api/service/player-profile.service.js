@@ -3,10 +3,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getPlayerProfileService = getPlayerProfileService;
-exports.getPlayerGiftService = getPlayerGiftService;
-exports.getBadgeService = getBadgeService;
-exports.getAchievementService = getAchievementService;
+exports.getAchievementService = exports.getBadgeService = exports.getPlayerGiftService = exports.getPlayerProfileService = void 0;
 const standard_error_1 = __importDefault(require("src/common/standard-error"));
 const error_type_1 = require("src/common/error-type");
 const user_repository_1 = require("../repository/user.repository");
@@ -53,7 +50,7 @@ async function getPlayerProfileService(data) {
             player_statistics: {
                 gamesWon: getOne?.TOTAL_WIN_GAME ?? 0,
                 roundWon: getOne?.TOTAL_ROUND_WIN ?? 0,
-                winPercentage: (getOne?.TOTAL_WIN_GAME ?? 0) / (getOne?.TOTAL_PLAYED_GAME ?? 1),
+                winPercentage: getOne?.TOTAL_WIN_GAME ?? 0 / getOne?.TOTAL_PLAYED_GAME ?? 0,
                 winningStreak: getOne?.WINNING_STREAK,
             },
         };
@@ -62,11 +59,12 @@ async function getPlayerProfileService(data) {
         throw new standard_error_1.default(error_type_1.ErrorCodes.API_VALIDATION_ERROR, error?.message ?? "User Record - Error.");
     }
 }
+exports.getPlayerProfileService = getPlayerProfileService;
 async function getBadgeService(data) {
     try {
         const { USER_ID } = data;
         const getOne = await (0, user_repository_1.getOneUserRecord)({ USER_ID });
-        const getBadge = await axios_1.default.get(`http://65.2.149.164/badge/list`);
+        const getBadge = await axios_1.default.get(`http://192.168.1.46:3001/badge/list`);
         const listBadge = getBadge?.data?.data?.data ?? [];
         return listBadge?.map((data) => {
             const getUserBadge = getOne?.BADGES?.find((user) => user?.ID === data?.ID);
@@ -77,7 +75,7 @@ async function getBadgeService(data) {
                     TYPE: data?.TYPE,
                     TASK_VALUE: data?.TASK_VALUE,
                     TEXT: data?.TEXT,
-                    COMPLETE_COUNTER: 10, // TODO
+                    COMPLETE_COUNTER: 10,
                     CURRENT_COUNTER: 1, // TODO
                 };
             }
@@ -88,7 +86,7 @@ async function getBadgeService(data) {
                     TYPE: data?.TYPE,
                     TASK_VALUE: data?.TASK_VALUE,
                     TEXT: data?.TEXT,
-                    COMPLETE_COUNTER: 0, // TODO
+                    COMPLETE_COUNTER: 0,
                     CURRENT_COUNTER: 0, // TODO
                 };
             }
@@ -98,11 +96,12 @@ async function getBadgeService(data) {
         throw new standard_error_1.default(error_type_1.ErrorCodes.API_VALIDATION_ERROR, "Badge Service is not reachable.  - Error.");
     }
 }
+exports.getBadgeService = getBadgeService;
 async function getAchievementService(data) {
     try {
         const { USER_ID } = data;
         const getOne = await (0, user_repository_1.getOneUserRecord)({ USER_ID });
-        const getBadge = await axios_1.default.get(`http://65.2.149.164/achievement/list`);
+        const getBadge = await axios_1.default.get(`http://192.168.1.46:3001/achievement/list`);
         const listBadge = getBadge?.data?.data?.data ?? [];
         return listBadge?.map((data) => {
             const getUserBadge = getOne?.BADGES?.find((user) => user?.ID === data?.ID);
@@ -113,7 +112,7 @@ async function getAchievementService(data) {
                     TYPE: data?.TYPE,
                     TASK_VALUE: data?.TASK_VALUE,
                     TEXT: data?.TEXT,
-                    COMPLETE_COUNTER: 10, // TODO
+                    COMPLETE_COUNTER: 10,
                     CURRENT_COUNTER: 1, // TODO
                 };
             }
@@ -124,7 +123,7 @@ async function getAchievementService(data) {
                     TYPE: data?.TYPE,
                     TASK_VALUE: data?.TASK_VALUE,
                     TEXT: data?.TEXT,
-                    COMPLETE_COUNTER: 0, // TODO
+                    COMPLETE_COUNTER: 0,
                     CURRENT_COUNTER: 0, // TODO
                 };
             }
@@ -134,6 +133,7 @@ async function getAchievementService(data) {
         throw new standard_error_1.default(error_type_1.ErrorCodes.API_VALIDATION_ERROR, "Badge Service is not reachable.  - Error.");
     }
 }
+exports.getAchievementService = getAchievementService;
 async function getPlayerGiftService(data) {
     try {
         const { USER_ID } = data;
@@ -158,6 +158,7 @@ async function getPlayerGiftService(data) {
         throw new standard_error_1.default(error_type_1.ErrorCodes.API_VALIDATION_ERROR, error?.message ?? "User Record - Error.");
     }
 }
+exports.getPlayerGiftService = getPlayerGiftService;
 // {
 //     "player_profile": {
 //       "player_name": "JohnDoe",

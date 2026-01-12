@@ -3,12 +3,12 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.leaveRoomClubPlay = leaveRoomClubPlay;
+exports.leaveRoomClubPlay = void 0;
 const auth_token_1 = require("src/middleware/auth.token");
 const room_club_play_entity_1 = require("src/repository/room-club-play.entity");
 const axios_1 = __importDefault(require("axios"));
 const game_winner_1 = require("src/util/game-winner");
-const url = "http://13.126.197.184";
+const url = "http://192.168.1.46:3005";
 async function leaveRoomClubPlay(io, socket, data) {
     try {
         const { Authtoken: token, ROOM_NAME: ID } = JSON.parse(data);
@@ -291,3 +291,4 @@ async function leaveRoomClubPlay(io, socket, data) {
         });
     }
 }
+exports.leaveRoomClubPlay = leaveRoomClubPlay;

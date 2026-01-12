@@ -13,7 +13,6 @@ exports.GiftCollect = void 0;
 const typeorm_1 = require("typeorm");
 let GiftCollect = class GiftCollect extends typeorm_1.BaseEntity {
 };
-exports.GiftCollect = GiftCollect;
 __decorate([
     (0, typeorm_1.PrimaryGeneratedColumn)("uuid", { name: "ID" }),
     __metadata("design:type", String)
@@ -46,6 +45,7 @@ __decorate([
     (0, typeorm_1.Column)('timestamp with time zone', { nullable: true }),
     __metadata("design:type", Date)
 ], GiftCollect.prototype, "UPDATE_DATE", void 0);
-exports.GiftCollect = GiftCollect = __decorate([
+GiftCollect = __decorate([
     (0, typeorm_1.Entity)({ name: "GIFT_COLLECT" })
 ], GiftCollect);
+exports.GiftCollect = GiftCollect;

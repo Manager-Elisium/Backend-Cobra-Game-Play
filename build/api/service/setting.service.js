@@ -3,8 +3,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getSettingProfileService = getSettingProfileService;
-exports.updateShowVipCardService = updateShowVipCardService;
+exports.updateShowVipCardService = exports.getSettingProfileService = void 0;
 const standard_error_1 = __importDefault(require("src/common/standard-error"));
 const error_type_1 = require("src/common/error-type");
 const user_repository_1 = require("../repository/user.repository");
@@ -17,7 +16,7 @@ async function getSettingProfileService(data) {
         if (!getOne) {
             throw new standard_error_1.default(error_type_1.ErrorCodes.API_VALIDATION_ERROR, "User Record is not found.");
         }
-        const getUser = await axios_1.default.get(`http://3.6.41.207/auth/user-detail`, {
+        const getUser = await axios_1.default.get(`http://192.168.1.46:3003/auth/user-detail`, {
             headers: {
                 "Content-Type": "application/json",
                 Authorization: `${authToken}`,
@@ -42,6 +41,7 @@ async function getSettingProfileService(data) {
         throw new standard_error_1.default(error_type_1.ErrorCodes.API_VALIDATION_ERROR, error?.message ?? "User Setting - Error.");
     }
 }
+exports.getSettingProfileService = getSettingProfileService;
 async function updateShowVipCardService(data) {
     try {
         const { USER_ID, IS_SHOW_VIP_CARD } = data;
@@ -60,3 +60,4 @@ async function updateShowVipCardService(data) {
         throw new standard_error_1.default(error_type_1.ErrorCodes.API_VALIDATION_ERROR, error?.message ?? "Update Show Vip Card - Error.");
     }
 }
+exports.updateShowVipCardService = updateShowVipCardService;

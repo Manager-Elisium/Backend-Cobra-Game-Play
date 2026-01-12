@@ -3,11 +3,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.createBugService = createBugService;
-exports.listBugReportService = listBugReportService;
-exports.paginationBugReportService = paginationBugReportService;
-exports.findOneBugService = findOneBugService;
-exports.updateBugService = updateBugService;
+exports.updateBugService = exports.findOneBugService = exports.paginationBugReportService = exports.listBugReportService = exports.createBugService = void 0;
 const standard_error_1 = __importDefault(require("src/common/standard-error"));
 const error_type_1 = require("src/common/error-type");
 const bug_repository_1 = require("../repository/bug.repository");
@@ -24,6 +20,7 @@ async function createBugService(data) {
         throw new standard_error_1.default(error_type_1.ErrorCodes.API_VALIDATION_ERROR, error?.message ?? "Ticket is not created.");
     }
 }
+exports.createBugService = createBugService;
 async function listBugReportService(data) {
     try {
         const query = {
@@ -41,6 +38,7 @@ async function listBugReportService(data) {
         throw new standard_error_1.default(error_type_1.ErrorCodes.API_VALIDATION_ERROR, "Bug Report Service is not reachable.");
     }
 }
+exports.listBugReportService = listBugReportService;
 async function paginationBugReportService(data) {
     try {
         const query = {
@@ -57,6 +55,7 @@ async function paginationBugReportService(data) {
         throw new standard_error_1.default(error_type_1.ErrorCodes.API_VALIDATION_ERROR, "Bug Report Service is not reachable.");
     }
 }
+exports.paginationBugReportService = paginationBugReportService;
 async function findOneBugService(id) {
     try {
         const query = {
@@ -79,6 +78,7 @@ async function findOneBugService(id) {
         throw new standard_error_1.default(error_type_1.ErrorCodes.API_VALIDATION_ERROR, "Bug Report Service is not reachable.");
     }
 }
+exports.findOneBugService = findOneBugService;
 async function updateBugService(id, body) {
     try {
         const data = await (0, bug_repository_1.updateAndReturnById)(id, body);
@@ -88,3 +88,4 @@ async function updateBugService(id, body) {
         throw new standard_error_1.default(error_type_1.ErrorCodes.API_VALIDATION_ERROR, "Bug Report Service is not reachable.");
     }
 }
+exports.updateBugService = updateBugService;

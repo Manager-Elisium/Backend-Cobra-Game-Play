@@ -13,7 +13,6 @@ exports.BugReport = void 0;
 const typeorm_1 = require("typeorm");
 let BugReport = class BugReport extends typeorm_1.BaseEntity {
 };
-exports.BugReport = BugReport;
 __decorate([
     (0, typeorm_1.PrimaryGeneratedColumn)("uuid", { name: "ID" }),
     __metadata("design:type", String)
@@ -50,6 +49,7 @@ __decorate([
     (0, typeorm_1.Column)('timestamp with time zone', { nullable: true }),
     __metadata("design:type", Date)
 ], BugReport.prototype, "UPDATE_DATE", void 0);
-exports.BugReport = BugReport = __decorate([
+BugReport = __decorate([
     (0, typeorm_1.Entity)({ name: "BUG_REPORT" })
 ], BugReport);
+exports.BugReport = BugReport;

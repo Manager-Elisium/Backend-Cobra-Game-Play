@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.setupInstantPlayNamespace = setupInstantPlayNamespace;
+exports.setupInstantPlayNamespace = void 0;
 const start_timer_1 = require("./instant/start-timer");
 const leave_timer_1 = require("./instant/leave-timer");
 const leave_room_1 = require("./instant/leave-room");
@@ -43,5 +43,6 @@ function setupInstantPlayNamespace(io, namespace) {
         socket.on('disconnect', () => (0, disconnect_1.disconnectInstantPlay)(io, socket)); // TODO -- Array New
     });
 }
+exports.setupInstantPlayNamespace = setupInstantPlayNamespace;
 // make all Socket instances of the "admin" namespace in the "room1" room disconnect
 // io.of("/admin").in("room1").disconnectSockets();

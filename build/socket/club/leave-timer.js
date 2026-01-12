@@ -3,10 +3,10 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.leaveTimerClubPlay = leaveTimerClubPlay;
+exports.leaveTimerClubPlay = void 0;
 const auth_token_1 = require("src/middleware/auth.token");
 const axios_1 = __importDefault(require("axios"));
-const url = "http://13.126.197.184";
+const url = "http://192.168.1.46:3005";
 async function leaveTimerClubPlay(io, socket, data) {
     try {
         const { Authtoken: token, TABLE_ID } = JSON.parse(data);
@@ -60,3 +60,4 @@ async function leaveTimerClubPlay(io, socket, data) {
         });
     }
 }
+exports.leaveTimerClubPlay = leaveTimerClubPlay;

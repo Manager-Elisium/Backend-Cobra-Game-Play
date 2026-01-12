@@ -85,5 +85,5 @@ class SocketService {
         }
     }
 }
-exports.SocketService = SocketService;
 SocketService.enkey = enkey;
+exports.SocketService = SocketService;

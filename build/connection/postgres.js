@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.connectToDatabase = connectToDatabase;
+exports.connectToDatabase = void 0;
 const logger_1 = require("./../common/logger");
 const ormconfig_1 = require("../libs/ormconfig");
 async function connectToDatabase() {
@@ -14,3 +14,4 @@ async function connectToDatabase() {
         return false;
     }
 }
+exports.connectToDatabase = connectToDatabase;

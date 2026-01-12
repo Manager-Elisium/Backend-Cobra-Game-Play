@@ -3,7 +3,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.leaveNameSpaceInstantPlay = leaveNameSpaceInstantPlay;
+exports.leaveNameSpaceInstantPlay = void 0;
 const axios_1 = __importDefault(require("axios"));
 const encrypt_1 = require("src/common/encrypt");
 const auth_token_1 = require("src/middleware/auth.token");
@@ -24,7 +24,7 @@ async function leaveNameSpaceInstantPlay(io, socket, data) {
                 });
             }
             else {
-                const getUser = await axios_1.default.get(`http://52.66.74.125/user/auth/user-detail`, {
+                const getUser = await axios_1.default.get(`http://192.168.1.46:3000/user/auth/user-detail`, {
                     headers: {
                         "Content-Type": "application/json",
                         Authorization: `Bearer ${token}`,
@@ -57,3 +57,4 @@ async function leaveNameSpaceInstantPlay(io, socket, data) {
         });
     }
 }
+exports.leaveNameSpaceInstantPlay = leaveNameSpaceInstantPlay;

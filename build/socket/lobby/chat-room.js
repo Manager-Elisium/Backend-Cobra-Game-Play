@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.chatLobbyPlay = chatLobbyPlay;
+exports.chatLobbyPlay = void 0;
 const auth_token_1 = require("src/middleware/auth.token");
 const room_lobby_play_entity_1 = require("src/repository/room-lobby-play.entity");
 async function chatLobbyPlay(io, socket, data) {
@@ -37,3 +37,4 @@ async function chatLobbyPlay(io, socket, data) {
         socket.emit('res:error-message', { status: false, message: error?.message ?? "Unknown Error." });
     }
 }
+exports.chatLobbyPlay = chatLobbyPlay;

@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.acceptDeclineInvitationByFriend = acceptDeclineInvitationByFriend;
+exports.acceptDeclineInvitationByFriend = void 0;
 const room_friend_play_entity_1 = require("src/repository/room-friend-play.entity");
 const auth_token_1 = require("src/middleware/auth.token");
 async function acceptDeclineInvitationByFriend(io, socket, data) {
@@ -39,3 +39,4 @@ async function acceptDeclineInvitationByFriend(io, socket, data) {
         socket.emit('res:error-message', { status: false, message: error?.message ?? "Unknown Error." });
     }
 }
+exports.acceptDeclineInvitationByFriend = acceptDeclineInvitationByFriend;

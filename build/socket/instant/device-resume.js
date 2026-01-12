@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.deviceResumedInstantPlay = deviceResumedInstantPlay;
+exports.deviceResumedInstantPlay = void 0;
 /**
  * Handle device resume event from Unity client
  * Broadcasts resume to all other clients in the same room
@@ -48,3 +48,4 @@ async function deviceResumedInstantPlay(io, socket, data) {
         });
     }
 }
+exports.deviceResumedInstantPlay = deviceResumedInstantPlay;

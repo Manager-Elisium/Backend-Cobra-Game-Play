@@ -3,7 +3,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.showCardFriendPlay = showCardFriendPlay;
+exports.showCardFriendPlay = void 0;
 const auth_token_1 = require("src/middleware/auth.token");
 const room_friend_play_entity_1 = require("src/repository/room-friend-play.entity");
 const orderBy_1 = __importDefault(require("lodash/orderBy"));
@@ -276,3 +276,4 @@ async function showCardFriendPlay(io, socket, data) {
         socket.emit('res:error-message', { status: false, message: error?.message ?? "Unknown Error." });
     }
 }
+exports.showCardFriendPlay = showCardFriendPlay;

@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.chatFriendPlay = chatFriendPlay;
+exports.chatFriendPlay = void 0;
 const auth_token_1 = require("src/middleware/auth.token");
 const room_friend_play_entity_1 = require("src/repository/room-friend-play.entity");
 async function chatFriendPlay(io, socket, data) {
@@ -37,3 +37,4 @@ async function chatFriendPlay(io, socket, data) {
         socket.emit('res:error-message', { status: false, message: error?.message ?? "Unknown Error." });
     }
 }
+exports.chatFriendPlay = chatFriendPlay;

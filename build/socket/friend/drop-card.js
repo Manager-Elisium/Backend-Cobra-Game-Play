@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.dropCardFriendPlay = dropCardFriendPlay;
+exports.dropCardFriendPlay = void 0;
 const auth_token_1 = require("src/middleware/auth.token");
 const room_friend_play_entity_1 = require("src/repository/room-friend-play.entity");
 async function dropCardFriendPlay(io, socket, data) {
@@ -64,3 +64,4 @@ async function dropCardFriendPlay(io, socket, data) {
         socket.emit('res:error-message', { status: false, message: error?.message ?? "Unknown Error." });
     }
 }
+exports.dropCardFriendPlay = dropCardFriendPlay;

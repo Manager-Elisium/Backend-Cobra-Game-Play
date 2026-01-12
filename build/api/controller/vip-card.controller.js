@@ -1,7 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.buyVipCard = buyVipCard;
-exports.listVipCard = listVipCard;
+exports.listVipCard = exports.buyVipCard = void 0;
 const encrypt_1 = require("src/common/encrypt");
 const vip_card_service_1 = require("../service/vip-card.service");
 async function buyVipCard(req, res, next) {
@@ -19,6 +18,7 @@ async function buyVipCard(req, res, next) {
         return res.json({ status: false, message: error?.message ?? "" });
     }
 }
+exports.buyVipCard = buyVipCard;
 async function listVipCard(req, res, next) {
     try {
         const { token } = req.body;
@@ -31,3 +31,4 @@ async function listVipCard(req, res, next) {
         return res.json(await (0, encrypt_1.encrypt)(JSON.stringify({ status: false, message: error?.message ?? "" })));
     }
 }
+exports.listVipCard = listVipCard;

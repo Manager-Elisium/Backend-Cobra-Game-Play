@@ -3,9 +3,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.initPageLoad = initPageLoad;
-exports.subtractCoin = subtractCoin;
-exports.addCoin = addCoin;
+exports.addCoin = exports.subtractCoin = exports.initPageLoad = void 0;
 const axios_1 = __importDefault(require("axios"));
 const moment_1 = __importDefault(require("moment"));
 const user_repository_1 = require("src/api/repository/user.repository");
@@ -16,7 +14,7 @@ async function initPageLoad(userId, token) {
     if (!getUser) {
         getUser = await (0, user_repository_1.createUserRecord)({ USER_ID: userId });
         try {
-            const friendListCoin = await axios_1.default.get(`http://3.6.41.207/friend/get-friend-id-list`, {
+            const friendListCoin = await axios_1.default.get(`http://192.168.1.46:3003/friend/get-friend-id-list`, {
                 headers: {
                     "Content-Type": "application/json",
                     Authorization: `Bearer ${token}`,
@@ -28,7 +26,7 @@ async function initPageLoad(userId, token) {
                 IS_REQUEST_COIN: false,
                 COIN: 50,
             }));
-            const listOfDailyReward = await axios_1.default.get(`http://65.2.149.164/reward/list`, {
+            const listOfDailyReward = await axios_1.default.get(`http://192.168.1.46:3001/reward/list`, {
                 headers: {
                     "Content-Type": "application/json",
                 },
@@ -45,7 +43,7 @@ async function initPageLoad(userId, token) {
                     IS_COLLECT: false,
                     IS_TODAY_TASK: false,
                 });
-            const listOfDailyMission = await axios_1.default.get(`http://65.2.149.164/mission/list`, {
+            const listOfDailyMission = await axios_1.default.get(`http://192.168.1.46:3001/mission/list`, {
                 headers: {
                     "Content-Type": "application/json",
                 },
@@ -84,7 +82,7 @@ async function initPageLoad(userId, token) {
             let currentDate = (0, moment_1.default)(new Date()).startOf("days");
             const isStartAfter30Days = (0, moment_1.default)(currentDate).diff(createDailyRewardDate, "day");
             if (isStartAfter30Days > 29) {
-                const listOfDailyReward = await axios_1.default.get(`http://65.2.149.164/reward/list`, {
+                const listOfDailyReward = await axios_1.default.get(`http://192.168.1.46:3001/reward/list`, {
                     headers: {
                         "Content-Type": "application/json",
                     },
@@ -125,7 +123,7 @@ async function initPageLoad(userId, token) {
                 // console.log(moment(currentDate).diff(todayLoginDate, 'day'));
                 const isDiffernce = (0, moment_1.default)(currentDate).diff(todayLoginDate, "days");
                 if (isDiffernce > 0) {
-                    const friendListCoin = await axios_1.default.get(`http://3.6.41.207/friend/get-friend-id-list`, {
+                    const friendListCoin = await axios_1.default.get(`http://192.168.1.46:3003/friend/get-friend-id-list`, {
                         headers: {
                             "Content-Type": "application/json",
                             Authorization: `Bearer ${token}`,
@@ -188,7 +186,7 @@ async function initPageLoad(userId, token) {
                         }
                     });
                     console.log(getDailyTask);
-                    const listOfDailyMission = await axios_1.default.get(`http://65.2.149.164/mission/list`, {
+                    const listOfDailyMission = await axios_1.default.get(`http://192.168.1.46:3001/mission/list`, {
                         headers: {
                             "Content-Type": "application/json",
                         },
@@ -246,6 +244,7 @@ async function initPageLoad(userId, token) {
     }
     return { getUser };
 }
+exports.initPageLoad = initPageLoad;
 async function subtractCoin(data) {
     const { USER_ID, COIN } = data;
     // TODO : Call getOneUserRecord
@@ -265,16 +264,23 @@ async function subtractCoin(data) {
         return { isAvalibleBalance: false };
     }
 }
+exports.subtractCoin = subtractCoin;
 async function addCoin(data) {
     const { USER_ID, COIN } = data;
+    console.log("addCoin - Adding coins. USER_ID:", USER_ID, "COIN:", COIN);
     let getUser = await (0, user_repository_1.getOneUserRecord)({ USER_ID });
     if (getUser) {
+        console.log("addCoin - Current coins before:", getUser.CURRENT_COIN);
         const coin = getUser.CURRENT_COIN + COIN;
+        console.log("addCoin - New coin amount:", coin);
         getUser = (await (0, user_repository_1.updateUserRecord)(getUser?.ID, { CURRENT_COIN: coin }))
             .raw?.[0];
-        return { isAddCoin: true };
+        console.log("addCoin - Updated user record:", getUser?.CURRENT_COIN);
+        return { isAddCoin: true, getUser };
     }
     else {
+        console.log("addCoin - User not found for USER_ID:", USER_ID);
         return { isAddCoin: false };
     }
 }
+exports.addCoin = addCoin;

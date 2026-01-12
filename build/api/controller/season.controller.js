@@ -1,8 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getSeasson = getSeasson;
-exports.buySeassonRoyalPass = buySeassonRoyalPass;
-exports.collectSeasonReward = collectSeasonReward;
+exports.collectSeasonReward = exports.buySeassonRoyalPass = exports.getSeasson = void 0;
 const encrypt_1 = require("src/common/encrypt");
 const season_service_1 = require("../service/season.service");
 async function getSeasson(req, res, next) {
@@ -18,6 +16,7 @@ async function getSeasson(req, res, next) {
         return res.json(await (0, encrypt_1.encrypt)(JSON.stringify({ status: false, message: error?.message ?? "" })));
     }
 }
+exports.getSeasson = getSeasson;
 async function buySeassonRoyalPass(req, res, next) {
     try {
         const { token } = req.body;
@@ -30,6 +29,7 @@ async function buySeassonRoyalPass(req, res, next) {
         return res.json(await (0, encrypt_1.encrypt)(JSON.stringify({ status: false, message: error?.message ?? "" })));
     }
 }
+exports.buySeassonRoyalPass = buySeassonRoyalPass;
 async function collectSeasonReward(req, res, next) {
     try {
         // const { token, seasonCollected, seasonDiamond } = req.body;
@@ -46,3 +46,4 @@ async function collectSeasonReward(req, res, next) {
         return res.json(await (0, encrypt_1.encrypt)(JSON.stringify({ status: false, message: error?.message ?? "" })));
     }
 }
+exports.collectSeasonReward = collectSeasonReward;

@@ -1,7 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getSettingProfile = getSettingProfile;
-exports.updateShopVipCard = updateShopVipCard;
+exports.updateShopVipCard = exports.getSettingProfile = void 0;
 const encrypt_1 = require("src/common/encrypt");
 const setting_service_1 = require("../service/setting.service");
 async function getSettingProfile(req, res, next) {
@@ -17,6 +16,7 @@ async function getSettingProfile(req, res, next) {
         return res.json(await (0, encrypt_1.encrypt)(JSON.stringify({ status: false, message: error?.message ?? "" })));
     }
 }
+exports.getSettingProfile = getSettingProfile;
 async function updateShopVipCard(req, res, next) {
     try {
         const { public_key, content, token } = req.body;
@@ -33,3 +33,4 @@ async function updateShopVipCard(req, res, next) {
         return res.json(await (0, encrypt_1.encrypt)(JSON.stringify({ status: false, message: error?.message ?? "" })));
     }
 }
+exports.updateShopVipCard = updateShopVipCard;

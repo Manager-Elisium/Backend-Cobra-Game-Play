@@ -1,9 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.updateSendGift = updateSendGift;
-exports.updateRequestGift = updateRequestGift;
-exports.listCollectGift = listCollectGift;
-exports.acceptCollectGift = acceptCollectGift;
+exports.acceptCollectGift = exports.listCollectGift = exports.updateRequestGift = exports.updateSendGift = void 0;
 const encrypt_1 = require("src/common/encrypt");
 const gift_service_1 = require("../service/gift.service");
 async function updateSendGift(req, res, next) {
@@ -22,6 +19,7 @@ async function updateSendGift(req, res, next) {
         return res.json(await (0, encrypt_1.encrypt)(JSON.stringify({ status: false, message: error?.message ?? "" })));
     }
 }
+exports.updateSendGift = updateSendGift;
 async function updateRequestGift(req, res, next) {
     try {
         const { public_key, content, token } = req.body;
@@ -38,6 +36,7 @@ async function updateRequestGift(req, res, next) {
         return res.json(await (0, encrypt_1.encrypt)(JSON.stringify({ status: false, message: error?.message ?? "" })));
     }
 }
+exports.updateRequestGift = updateRequestGift;
 async function listCollectGift(req, res, next) {
     try {
         const { token } = req.body;
@@ -51,6 +50,7 @@ async function listCollectGift(req, res, next) {
         return res.json(await (0, encrypt_1.encrypt)(JSON.stringify({ status: false, message: error?.message ?? "" })));
     }
 }
+exports.listCollectGift = listCollectGift;
 async function acceptCollectGift(req, res, next) {
     try {
         const { public_key, content, token } = req.body;
@@ -67,3 +67,4 @@ async function acceptCollectGift(req, res, next) {
         return res.json(await (0, encrypt_1.encrypt)(JSON.stringify({ status: false, message: error?.message ?? "" })));
     }
 }
+exports.acceptCollectGift = acceptCollectGift;

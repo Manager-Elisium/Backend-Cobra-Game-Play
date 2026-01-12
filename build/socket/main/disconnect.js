@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.disconnect = disconnect;
+exports.disconnect = void 0;
 const rabbitmq_1 = require("src/connection/rabbitmq");
 async function disconnect(io, socket) {
     try {
@@ -22,3 +22,4 @@ async function disconnect(io, socket) {
         socket.emit('res:error-message', { status: false, message: error?.message ?? "Unknown Error." });
     }
 }
+exports.disconnect = disconnect;

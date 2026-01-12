@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.startGameByOwner = startGameByOwner;
+exports.startGameByOwner = void 0;
 const room_friend_play_entity_1 = require("src/repository/room-friend-play.entity");
 const auth_token_1 = require("src/middleware/auth.token");
 const deck_1 = require("src/util/deck");
@@ -53,3 +53,4 @@ async function startGameByOwner(io, socket, data) {
         socket.emit('res:error-message', { status: false, message: error?.message ?? "Unknown Error." });
     }
 }
+exports.startGameByOwner = startGameByOwner;

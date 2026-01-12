@@ -1,7 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.collectDailyReward = collectDailyReward;
-exports.collectMissionReward = collectMissionReward;
+exports.collectMissionReward = exports.collectDailyReward = void 0;
 const encrypt_1 = require("src/common/encrypt");
 const daily_reward_service_1 = require("../service/daily-reward.service");
 async function collectDailyReward(req, res, next) {
@@ -16,6 +15,7 @@ async function collectDailyReward(req, res, next) {
         return res.json(await (0, encrypt_1.encrypt)(JSON.stringify({ status: false, message: error?.message ?? "" })));
     }
 }
+exports.collectDailyReward = collectDailyReward;
 async function collectMissionReward(req, res, next) {
     try {
         const { public_key, content, token } = req.body;
@@ -30,3 +30,4 @@ async function collectMissionReward(req, res, next) {
         return res.json(await (0, encrypt_1.encrypt)(JSON.stringify({ status: false, message: error?.message ?? "" })));
     }
 }
+exports.collectMissionReward = collectMissionReward;

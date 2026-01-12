@@ -3,8 +3,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.listItemService = listItemService;
-exports.listItemServiceForAdmin = listItemServiceForAdmin;
+exports.listItemServiceForAdmin = exports.listItemService = void 0;
 const standard_error_1 = __importDefault(require("src/common/standard-error"));
 const error_type_1 = require("src/common/error-type");
 const user_repository_1 = require("../repository/user.repository");
@@ -141,6 +140,7 @@ async function listItemService(data) {
         throw new standard_error_1.default(error_type_1.ErrorCodes.API_VALIDATION_ERROR, "Get Item Service is not reachable.");
     }
 }
+exports.listItemService = listItemService;
 async function listItemServiceForAdmin(data) {
     try {
         const listOfItemList = await (0, user_repository_1.getOneUserRecord)({ USER_ID: data?.userId });
@@ -197,3 +197,4 @@ async function listItemServiceForAdmin(data) {
         throw new standard_error_1.default(error_type_1.ErrorCodes.API_VALIDATION_ERROR, "Get Item Service is not reachable.");
     }
 }
+exports.listItemServiceForAdmin = listItemServiceForAdmin;

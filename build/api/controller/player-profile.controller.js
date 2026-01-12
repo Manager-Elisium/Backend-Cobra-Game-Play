@@ -1,9 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getPlayerProfile = getPlayerProfile;
-exports.getPlayerGift = getPlayerGift;
-exports.getBadgePlayer = getBadgePlayer;
-exports.getAchievementPlayer = getAchievementPlayer;
+exports.getAchievementPlayer = exports.getBadgePlayer = exports.getPlayerGift = exports.getPlayerProfile = void 0;
 const encrypt_1 = require("src/common/encrypt");
 const player_profile_service_1 = require("../service/player-profile.service");
 async function getPlayerProfile(req, res, next) {
@@ -20,6 +17,7 @@ async function getPlayerProfile(req, res, next) {
         return res.json(await (0, encrypt_1.encrypt)(JSON.stringify({ status: false, message: error?.message ?? "" })));
     }
 }
+exports.getPlayerProfile = getPlayerProfile;
 async function getBadgePlayer(req, res, next) {
     try {
         const { token } = req.body;
@@ -34,6 +32,7 @@ async function getBadgePlayer(req, res, next) {
         return res.json(await (0, encrypt_1.encrypt)(JSON.stringify({ status: false, message: error?.message ?? "" })));
     }
 }
+exports.getBadgePlayer = getBadgePlayer;
 async function getAchievementPlayer(req, res, next) {
     try {
         const { token } = req.body;
@@ -48,6 +47,7 @@ async function getAchievementPlayer(req, res, next) {
         return res.json(await (0, encrypt_1.encrypt)(JSON.stringify({ status: false, message: error?.message ?? "" })));
     }
 }
+exports.getAchievementPlayer = getAchievementPlayer;
 async function getPlayerGift(req, res, next) {
     try {
         const { id: USER_ID } = req.params;
@@ -60,3 +60,4 @@ async function getPlayerGift(req, res, next) {
         return res.json(await (0, encrypt_1.encrypt)(JSON.stringify({ status: false, message: error?.message ?? "" })));
     }
 }
+exports.getPlayerGift = getPlayerGift;

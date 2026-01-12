@@ -3,10 +3,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.uploadFile = uploadFile;
-exports.deleteFile = deleteFile;
-exports.uploadMultipleFile = uploadMultipleFile;
-exports.generatePermanentPresignedUrl = generatePermanentPresignedUrl;
+exports.generatePermanentPresignedUrl = exports.uploadMultipleFile = exports.deleteFile = exports.uploadFile = void 0;
 const client_s3_1 = require("@aws-sdk/client-s3");
 const s3_request_presigner_1 = require("@aws-sdk/s3-request-presigner");
 const multer_1 = __importDefault(require("multer"));
@@ -36,6 +33,7 @@ async function generatePermanentPresignedUrl(bucketName, key) {
     const signedUrl = await (0, s3_request_presigner_1.getSignedUrl)(s3Client, command, { expiresIn }); // 1 year in seconds
     return signedUrl;
 }
+exports.generatePermanentPresignedUrl = generatePermanentPresignedUrl;
 // Upload User File
 async function uploadFile(req, res, next) {
     try {
@@ -74,6 +72,7 @@ async function uploadFile(req, res, next) {
         next(error);
     }
 }
+exports.uploadFile = uploadFile;
 // Upload User File
 async function uploadMultipleFile(req, res, next) {
     try {
@@ -111,6 +110,7 @@ async function uploadMultipleFile(req, res, next) {
         next(error);
     }
 }
+exports.uploadMultipleFile = uploadMultipleFile;
 // delete File
 async function deleteFile(bucketName, key) {
     try {
@@ -121,3 +121,4 @@ async function deleteFile(bucketName, key) {
         return false;
     }
 }
+exports.deleteFile = deleteFile;

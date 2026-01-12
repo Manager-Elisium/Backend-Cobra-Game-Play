@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.setupSocket = setupSocket;
+exports.setupSocket = void 0;
 const socket_io_1 = require("socket.io");
 const club_router_1 = require("src/socket/club.router");
 const instant_play_router_1 = require("src/socket/instant-play.router");
@@ -29,3 +29,4 @@ async function setupSocket(app) {
     (0, club_router_1.setupClubNamespace)(io, clubNamespace);
     return io;
 }
+exports.setupSocket = setupSocket;

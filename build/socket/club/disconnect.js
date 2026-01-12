@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.disconnectClubPlay = disconnectClubPlay;
+exports.disconnectClubPlay = void 0;
 const room_club_play_entity_1 = require("src/repository/room-club-play.entity");
 const game_winner_1 = require("src/util/game-winner");
 // import { deletedDisconnet } from 'src/repository/temp-lobby-play.entity';
@@ -239,3 +239,4 @@ async function disconnectClubPlay(io, socket) {
         socket.emit('res:error-message', { status: false, message: error?.message ?? "Unknown Error." });
     }
 }
+exports.disconnectClubPlay = disconnectClubPlay;

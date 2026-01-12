@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.jointRoom = jointRoom;
+exports.jointRoom = void 0;
 const room_friend_play_entity_1 = require("src/repository/room-friend-play.entity");
 const auth_token_1 = require("src/middleware/auth.token");
 const user_repository_1 = require("src/api/repository/user.repository");
@@ -31,7 +31,7 @@ async function jointRoom(io, socket, data) {
                     const currentUser = {
                         CONNECTION_ID: socket.id,
                         USER_ID: isAuthorized.ID,
-                        IS_JOINT_ROOM: false, // send request room owner and accept
+                        IS_JOINT_ROOM: false,
                         IS_LEAVE_ROOM: false,
                         IS_ROOM_OWNER: false,
                         TOTAL: 0,
@@ -106,3 +106,4 @@ async function jointRoom(io, socket, data) {
         });
     }
 }
+exports.jointRoom = jointRoom;

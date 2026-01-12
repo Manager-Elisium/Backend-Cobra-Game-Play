@@ -1,21 +1,19 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.create = create;
-exports.findOne = findOne;
-exports.updateById = updateById;
-exports.updateAndReturnById = updateAndReturnById;
-exports.deleteAndReturnById = deleteAndReturnById;
-exports.getRoomByConnectionId = getRoomByConnectionId;
+exports.getRoomByConnectionId = exports.deleteAndReturnById = exports.updateAndReturnById = exports.updateById = exports.findOne = exports.create = void 0;
 const room_friend_play_entity_1 = require("src/domain/friend/room-friend-play.entity");
 async function create(data) {
     return await room_friend_play_entity_1.RoomFriendPlay.save(data);
 }
+exports.create = create;
 async function findOne(data) {
     return await room_friend_play_entity_1.RoomFriendPlay.findOneBy(data);
 }
+exports.findOne = findOne;
 async function updateById(id, data) {
     return await room_friend_play_entity_1.RoomFriendPlay.update(id, data);
 }
+exports.updateById = updateById;
 async function deleteAndReturnById(id) {
     return await room_friend_play_entity_1.RoomFriendPlay
         .createQueryBuilder()
@@ -25,6 +23,7 @@ async function deleteAndReturnById(id) {
         .returning('*')
         .execute();
 }
+exports.deleteAndReturnById = deleteAndReturnById;
 async function updateAndReturnById(id, data) {
     return await room_friend_play_entity_1.RoomFriendPlay
         .createQueryBuilder()
@@ -34,6 +33,7 @@ async function updateAndReturnById(id, data) {
         .returning('*')
         .execute();
 }
+exports.updateAndReturnById = updateAndReturnById;
 async function getRoomByConnectionId(query) {
     const roomRepository = room_friend_play_entity_1.RoomFriendPlay.getRepository();
     const rooms = await roomRepository
@@ -49,3 +49,4 @@ async function getRoomByConnectionId(query) {
         .getOne();
     return rooms;
 }
+exports.getRoomByConnectionId = getRoomByConnectionId;

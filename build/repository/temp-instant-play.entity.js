@@ -1,23 +1,16 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.create = create;
-exports.deleted = deleted;
-exports.currentCount = currentCount;
-exports.findUser = findUser;
-exports.mutipleDeleted = mutipleDeleted;
-exports.updateById = updateById;
-exports.deletedDisconnet = deletedDisconnet;
-exports.currentCountInLobby = currentCountInLobby;
-exports.multipleDeleted = multipleDeleted;
-exports.findOneLobby = findOneLobby;
+exports.findOneLobby = exports.multipleDeleted = exports.currentCountInLobby = exports.deletedDisconnet = exports.updateById = exports.mutipleDeleted = exports.findUser = exports.currentCount = exports.deleted = exports.create = void 0;
 const temp_instant_play_entity_1 = require("src/domain/instant/temp-instant-play.entity");
 const typeorm_1 = require("typeorm");
 async function create(data) {
     return await temp_instant_play_entity_1.LobbyInstantPlay.save(data);
 }
+exports.create = create;
 async function currentCountInLobby(query) {
     return await temp_instant_play_entity_1.LobbyInstantPlay.find(query);
 }
+exports.currentCountInLobby = currentCountInLobby;
 async function deleted(data) {
     return await temp_instant_play_entity_1.LobbyInstantPlay.createQueryBuilder()
         .delete()
@@ -26,6 +19,7 @@ async function deleted(data) {
         .where("USER_ID = :USER_ID", { USER_ID: data.USER_ID })
         .execute();
 }
+exports.deleted = deleted;
 async function deletedDisconnet(data) {
     return await temp_instant_play_entity_1.LobbyInstantPlay.createQueryBuilder()
         .delete()
@@ -34,6 +28,7 @@ async function deletedDisconnet(data) {
         .where("CONNECTION_ID = :CONNECTION_ID", { CONNECTION_ID: data.CONNECTION_ID })
         .execute();
 }
+exports.deletedDisconnet = deletedDisconnet;
 async function mutipleDeleted(USER_ID) {
     return await temp_instant_play_entity_1.LobbyInstantPlay.createQueryBuilder()
         .delete()
@@ -41,9 +36,11 @@ async function mutipleDeleted(USER_ID) {
         .whereInIds(USER_ID)
         .execute();
 }
+exports.mutipleDeleted = mutipleDeleted;
 async function currentCount() {
     return await temp_instant_play_entity_1.LobbyInstantPlay.count();
 }
+exports.currentCount = currentCount;
 async function findUser(data) {
     return await temp_instant_play_entity_1.LobbyInstantPlay.findAndCount({
         where: {
@@ -53,9 +50,11 @@ async function findUser(data) {
         take: 3
     });
 }
+exports.findUser = findUser;
 async function updateById(id, data) {
     return await temp_instant_play_entity_1.LobbyInstantPlay.update(id, data);
 }
+exports.updateById = updateById;
 async function multipleDeleted(data) {
     return await temp_instant_play_entity_1.LobbyInstantPlay.createQueryBuilder()
         .delete()
@@ -64,6 +63,8 @@ async function multipleDeleted(data) {
         .returning("*")
         .execute();
 }
+exports.multipleDeleted = multipleDeleted;
 async function findOneLobby(query) {
     return await temp_instant_play_entity_1.LobbyInstantPlay.findOne(query);
 }
+exports.findOneLobby = findOneLobby;

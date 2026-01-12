@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.disconnectLobbyPlay = disconnectLobbyPlay;
+exports.disconnectLobbyPlay = void 0;
 const room_lobby_play_entity_1 = require("src/repository/room-lobby-play.entity");
 const temp_lobby_play_entity_1 = require("src/repository/temp-lobby-play.entity");
 const game_winner_1 = require("src/util/game-winner");
@@ -236,3 +236,4 @@ async function disconnectLobbyPlay(io, socket) {
         socket.emit('res:error-message', { status: false, message: error?.message ?? "Unknown Error." });
     }
 }
+exports.disconnectLobbyPlay = disconnectLobbyPlay;

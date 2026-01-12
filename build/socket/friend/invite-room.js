@@ -3,7 +3,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.sendRoomByOwner = sendRoomByOwner;
+exports.sendRoomByOwner = void 0;
 const room_friend_play_entity_1 = require("src/repository/room-friend-play.entity");
 const auth_token_1 = require("src/middleware/auth.token");
 const axios_1 = __importDefault(require("axios"));
@@ -65,7 +65,7 @@ async function sendRoomByOwner(io, socket, data) {
                             },
                         });
                         // TODO : Redis
-                        const getUser = await axios_1.default.get(`http://52.66.74.125/user/auth/user-detail`, {
+                        const getUser = await axios_1.default.get(`http://192.168.1.46:3000/user/auth/user-detail`, {
                             headers: {
                                 "Content-Type": "application/json",
                                 Authorization: `Bearer ${token}`,
@@ -102,3 +102,4 @@ async function sendRoomByOwner(io, socket, data) {
         });
     }
 }
+exports.sendRoomByOwner = sendRoomByOwner;

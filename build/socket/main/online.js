@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.onlineUser = onlineUser;
+exports.onlineUser = void 0;
 const rabbitmq_1 = require("src/connection/rabbitmq");
 const auth_token_1 = require("src/middleware/auth.token");
 const reward_service_1 = require("src/util/reward.service");
@@ -44,3 +44,4 @@ async function onlineUser(socket, data) {
         socket.emit('res:error-message', { status: false, message: error?.message ?? "Unknown Error." });
     }
 }
+exports.onlineUser = onlineUser;

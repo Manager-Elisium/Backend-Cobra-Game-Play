@@ -1,7 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getPlayerProfile = getPlayerProfile;
-exports.listUserItem = listUserItem;
+exports.listUserItem = exports.getPlayerProfile = void 0;
 const player_detail_service_1 = require("../service/player-detail.service");
 const encrypt_1 = require("../common/encrypt");
 const item_service_1 = require("../service/item.service");
@@ -19,6 +18,7 @@ async function getPlayerProfile(req, res, next) {
         return res.json({ status: false, message: error?.message ?? "" });
     }
 }
+exports.getPlayerProfile = getPlayerProfile;
 async function listUserItem(req, res, next) {
     try {
         const { itemName, userId } = req.query;
@@ -30,3 +30,4 @@ async function listUserItem(req, res, next) {
         return res.json({ status: false, message: error?.message ?? "" });
     }
 }
+exports.listUserItem = listUserItem;

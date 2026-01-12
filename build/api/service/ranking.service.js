@@ -3,7 +3,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getRankingService = getRankingService;
+exports.getRankingService = void 0;
 const standard_error_1 = __importDefault(require("src/common/standard-error"));
 const error_type_1 = require("src/common/error-type");
 const user_repository_1 = require("../repository/user.repository");
@@ -77,7 +77,7 @@ async function getRankingService(data) {
             }
             try {
                 console.log(listRankingUserId);
-                let userList = await axios_1.default.post(`http://3.6.41.207/friend/list-user-details`, {
+                let userList = await axios_1.default.post(`http://192.168.1.46:3003/friend/list-user-details`, {
                     userId: listRankingUserId,
                 }, {
                     headers: {
@@ -176,7 +176,7 @@ async function getRankingService(data) {
         }
         else if (userType === "country") {
             try {
-                let userList = await axios_1.default.get(`http://3.6.41.207/friend/country-user-list/${country}`, {
+                let userList = await axios_1.default.get(`http://192.168.1.46:3003/friend/country-user-list/${country}`, {
                     headers: {
                         "Content-Type": "application/json",
                     },
@@ -230,15 +230,12 @@ async function getRankingService(data) {
         }
         else {
             try {
-                let friendList = await axios_1.default.get(`http://3.6.41.207/friend/my-friend-list/${USER_ID}`, {
+                let friendList = await axios_1.default.get(`http://192.168.1.46:3003/friend/my-friend-list/${USER_ID}`, {
                     headers: {
                         "Content-Type": "application/json",
                     },
                 });
-                const listFriend = [
-                    ...(friendList?.data?.friends ?? []),
-                    friendList?.data?.currentUser,
-                ].filter(Boolean);
+                const listFriend = [...friendList?.data?.friends, friendList?.data?.currentUser] ?? [];
                 if (!listFriend.length) {
                     throw new standard_error_1.default(error_type_1.ErrorCodes.API_VALIDATION_ERROR, "You have not any Friend. Please add first friend.");
                 }
@@ -290,3 +287,4 @@ async function getRankingService(data) {
         throw new standard_error_1.default(error_type_1.ErrorCodes.API_VALIDATION_ERROR, error?.message ?? "Ranking Service is not reachable.");
     }
 }
+exports.getRankingService = getRankingService;

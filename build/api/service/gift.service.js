@@ -3,9 +3,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getPlayerGiftService = getPlayerGiftService;
-exports.listCollectGiftService = listCollectGiftService;
-exports.acceptCollectGiftService = acceptCollectGiftService;
+exports.acceptCollectGiftService = exports.listCollectGiftService = exports.getPlayerGiftService = void 0;
 const standard_error_1 = __importDefault(require("src/common/standard-error"));
 const error_type_1 = require("src/common/error-type");
 const user_repository_1 = require("../repository/user.repository");
@@ -26,17 +24,18 @@ async function getPlayerGiftService(data) {
         }
         if (isSendCoin) {
             const insertGift = SEND_COIN_USERS?.map((data) => ({
-                USER_ID: data, // Send Coin - User Id
-                REQUEST_USER_ID: USER_ID, // My User Id
+                USER_ID: data,
+                REQUEST_USER_ID: USER_ID,
                 COIN: 50,
                 IS_COLLECT: true,
             }));
+            console.log("Sending coins - Creating gifts:", JSON.stringify(insertGift));
             await (0, gift_repository_1.insertManyById)(insertGift);
         }
         else {
             const insertGift = SEND_COIN_USERS?.map((data) => ({
-                USER_ID: data, // Send Request For Coin - User Id
-                REQUEST_USER_ID: USER_ID, // My User Id
+                USER_ID: data,
+                REQUEST_USER_ID: USER_ID,
                 COIN: 50,
                 IS_REQ_AND_SEND: true,
             }));
@@ -45,24 +44,42 @@ async function getPlayerGiftService(data) {
         const getUserSendRecevieCoin = getOne?.SEND_RECEIVE_COIN ?? [];
         let mergedArray;
         if (isSendCoin) {
-            mergedArray = getUserSendRecevieCoin?.map((coin) => {
-                const isInclude = SEND_COIN_USERS?.includes(coin.ID);
-                if (isInclude) {
-                    return { ...coin, IS_SEND_COIN: true };
+            // FIX: Add missing friends to the array first, then update
+            mergedArray = [...getUserSendRecevieCoin];
+            SEND_COIN_USERS?.forEach((friendId) => {
+                const existingIndex = mergedArray.findIndex((coin) => coin.ID === friendId);
+                if (existingIndex >= 0) {
+                    // Update existing entry
+                    mergedArray[existingIndex] = { ...mergedArray[existingIndex], IS_SEND_COIN: true };
                 }
                 else {
-                    return { ...coin };
+                    // Add new entry for friend not in SEND_RECEIVE_COIN
+                    mergedArray.push({
+                        ID: friendId,
+                        IS_SEND_COIN: true,
+                        IS_REQUEST_COIN: false,
+                        COIN: 0,
+                    });
                 }
             });
         }
         else {
-            mergedArray = getUserSendRecevieCoin?.map((coin) => {
-                const isInclude = SEND_COIN_USERS?.includes(coin.ID);
-                if (isInclude) {
-                    return { ...coin, IS_REQUEST_COIN: true };
+            // FIX: Add missing friends to the array first, then update
+            mergedArray = [...getUserSendRecevieCoin];
+            SEND_COIN_USERS?.forEach((friendId) => {
+                const existingIndex = mergedArray.findIndex((coin) => coin.ID === friendId);
+                if (existingIndex >= 0) {
+                    // Update existing entry
+                    mergedArray[existingIndex] = { ...mergedArray[existingIndex], IS_REQUEST_COIN: true };
                 }
                 else {
-                    return { ...coin };
+                    // Add new entry for friend not in SEND_RECEIVE_COIN
+                    mergedArray.push({
+                        ID: friendId,
+                        IS_SEND_COIN: false,
+                        IS_REQUEST_COIN: true,
+                        COIN: 0,
+                    });
                 }
             });
         }
@@ -77,41 +94,74 @@ async function getPlayerGiftService(data) {
         throw new standard_error_1.default(error_type_1.ErrorCodes.API_VALIDATION_ERROR, error?.message ?? "User Record - Error.");
     }
 }
+exports.getPlayerGiftService = getPlayerGiftService;
 async function listCollectGiftService(data) {
     try {
         const { USER_ID, authToken } = data;
+        console.log("listCollectGiftService - Querying gifts for USER_ID:", USER_ID);
+        // Get all gifts for this user (both direct sends and request coins)
         const getOne = await (0, gift_repository_1.getGiftByUserId)({
             where: { USER_ID },
         });
+        console.log("listCollectGiftService - Found gifts:", getOne?.length || 0, getOne);
         if (!getOne?.length) {
             return {
                 giftAndAcceptCoin: [],
             };
         }
         const getUserId = [
-            ...new Set(getOne?.map((data) => data.REQUEST_USER_ID)),
-        ].toString();
-        const reqBody = await (0, encrypt_1.encrypt)(JSON.stringify({ USER_IDS: getUserId }));
-        const getUser = await axios_1.default.post(`http://52.66.74.125/user/auth/list-user-details`, { public_key: reqBody.public_key, content: reqBody.content }, {
+            ...new Set(getOne?.map((data) => data.REQUEST_USER_ID).filter((id) => id)),
+        ];
+        // If no valid user IDs, return empty array
+        if (!getUserId.length) {
+            return {
+                giftAndAcceptCoin: [],
+            };
+        }
+        const userIdsString = getUserId.join(",");
+        const reqBody = await (0, encrypt_1.encrypt)(JSON.stringify({ USER_IDS: userIdsString }));
+        const getUser = await axios_1.default.post(`http://192.168.1.46:3000/user/auth/list-user-details`, { public_key: reqBody.public_key, content: reqBody.content }, {
             headers: {
                 "Content-Type": "application/json",
                 Authorization: `${authToken}`,
             },
         });
-        let getUserProfile = (await (0, encrypt_1.decrypt)(getUser?.data?.data));
-        getUserProfile = JSON.parse(getUserProfile.toString()).users;
+        if (!getUser?.data?.public_key || !getUser?.data?.content) {
+            console.log("listCollectGiftService - No user data from auth service");
+            return {
+                giftAndAcceptCoin: [],
+            };
+        }
+        let getUserProfile = (await (0, encrypt_1.decrypt)({ public_key: getUser.data.public_key, content: getUser.data.content }));
+        getUserProfile = JSON.parse(getUserProfile.toString());
+        console.log("listCollectGiftService - Decrypted response:", getUserProfile);
+        getUserProfile = getUserProfile?.users || [];
+        console.log("listCollectGiftService - User profiles from auth service:", getUserProfile?.length || 0, getUserProfile);
         const getUsersProfile = getOne.map((data) => {
-            let getProfile = getUserProfile.find((obj) => obj.ID === data.REQUEST_USER_ID);
-            return { ...getProfile, ...data };
+            let getProfile = getUserProfile.find((obj) => obj?.ID === data.REQUEST_USER_ID);
+            console.log(`listCollectGiftService - Matching REQUEST_USER_ID: ${data.REQUEST_USER_ID}, Found: ${!!getProfile}`);
+            if (getProfile) {
+                return { ...getProfile, ...data };
+            }
+            else {
+                // Return gift data even if profile not found
+                return { ...data };
+            }
         });
+        console.log("listCollectGiftService - Final mapped profiles:", getUsersProfile?.length || 0);
         return {
             giftAndAcceptCoin: getUsersProfile ?? [],
         };
     }
     catch (error) {
-        throw new standard_error_1.default(error_type_1.ErrorCodes.API_VALIDATION_ERROR, error?.message ?? "User's Gift - Error.");
+        // Return empty array instead of throwing error for better UX
+        console.error("Error in listCollectGiftService:", error);
+        return {
+            giftAndAcceptCoin: [],
+        };
     }
 }
+exports.listCollectGiftService = listCollectGiftService;
 async function acceptCollectGiftService(data) {
     try {
         const { USER_ID, ACCEPT_REQUEST, IS_ACCEPT } = data;
@@ -124,22 +174,27 @@ async function acceptCollectGiftService(data) {
                 acceptAndSendCoin: getOne?.raw ?? [],
             };
         }
-        // add coin
+        // add coin for gifts with IS_COLLECT = true (direct coin sends)
         let addGiftCoin = getOne?.raw
-            ?.filter((data) => data.IS_COLLECT)
+            ?.filter((data) => data.IS_COLLECT === true)
             .reduce((sum, current) => {
-            return sum + current.COIN;
+            return sum + (current.COIN || 0);
         }, 0);
-        if (addGiftCoin) {
-            const data = { USER_ID, COIN: addGiftCoin };
-            await (0, reward_service_1.addCoin)(data);
+        console.log("acceptCollectGiftService - Gifts to add coins:", getOne?.raw?.filter((data) => data.IS_COLLECT === true));
+        console.log("acceptCollectGiftService - Total coins to add:", addGiftCoin);
+        console.log("acceptCollectGiftService - USER_ID:", USER_ID);
+        if (addGiftCoin && addGiftCoin > 0) {
+            const coinData = { USER_ID, COIN: addGiftCoin };
+            console.log("acceptCollectGiftService - Calling addCoin with:", coinData);
+            const coinResult = await (0, reward_service_1.addCoin)(coinData);
+            console.log("acceptCollectGiftService - addCoin result:", coinResult);
         }
         // send coin
         const sendCoin = getOne?.raw?.filter((data) => data.IS_REQ_AND_SEND);
         if (sendCoin.length > 0) {
             const insertGift = sendCoin?.map((data) => ({
-                USER_ID: data?.REQUEST_USER_ID, // Send Coin - User Id
-                REQUEST_USER_ID: data?.USER_ID, // My User Id
+                USER_ID: data?.REQUEST_USER_ID,
+                REQUEST_USER_ID: data?.USER_ID,
                 COIN: 50,
                 IS_COLLECT: true,
             }));
@@ -153,3 +208,4 @@ async function acceptCollectGiftService(data) {
         throw new standard_error_1.default(error_type_1.ErrorCodes.API_VALIDATION_ERROR, error?.message ?? "Gift Accept and Send - Error.");
     }
 }
+exports.acceptCollectGiftService = acceptCollectGiftService;

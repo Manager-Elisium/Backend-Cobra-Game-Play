@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getRanking = getRanking;
+exports.getRanking = void 0;
 const encrypt_1 = require("src/common/encrypt");
 const ranking_service_1 = require("../service/ranking.service");
 async function getRanking(req, res, next) {
@@ -24,3 +24,4 @@ async function getRanking(req, res, next) {
         return res.json(await (0, encrypt_1.encrypt)(JSON.stringify({ status: false, message: error?.message ?? "" })));
     }
 }
+exports.getRanking = getRanking;

@@ -22,7 +22,6 @@ let RoomFriendPlay = RoomFriendPlay_1 = class RoomFriendPlay extends typeorm_1.B
         this.NAME = `${randomString}${result[0].nextval}`;
     }
 };
-exports.RoomFriendPlay = RoomFriendPlay;
 __decorate([
     (0, typeorm_1.PrimaryGeneratedColumn)('uuid', { name: "ID" }),
     __metadata("design:type", String)
@@ -101,9 +100,10 @@ __decorate([
     __metadata("design:paramtypes", []),
     __metadata("design:returntype", Promise)
 ], RoomFriendPlay.prototype, "assignRoomSequence", null);
-exports.RoomFriendPlay = RoomFriendPlay = RoomFriendPlay_1 = __decorate([
+RoomFriendPlay = RoomFriendPlay_1 = __decorate([
     (0, typeorm_1.Entity)({ name: "FRIEND_PLAY_ROOM" })
 ], RoomFriendPlay);
+exports.RoomFriendPlay = RoomFriendPlay;
 // CREATE SEQUENCE IF NOT EXISTS public.friend_room_sequence
 //     INCREMENT 1
 //     START 1

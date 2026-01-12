@@ -13,7 +13,6 @@ exports.LobbyInstantPlay = void 0;
 const typeorm_1 = require("typeorm");
 let LobbyInstantPlay = class LobbyInstantPlay extends typeorm_1.BaseEntity {
 };
-exports.LobbyInstantPlay = LobbyInstantPlay;
 __decorate([
     (0, typeorm_1.PrimaryGeneratedColumn)("uuid", { name: "ID" }),
     __metadata("design:type", String)
@@ -38,6 +37,7 @@ __decorate([
     (0, typeorm_1.Column)('timestamp with time zone', { nullable: false, default: () => 'CURRENT_TIMESTAMP' }),
     __metadata("design:type", Date)
 ], LobbyInstantPlay.prototype, "CREATED_DATE", void 0);
-exports.LobbyInstantPlay = LobbyInstantPlay = __decorate([
+LobbyInstantPlay = __decorate([
     (0, typeorm_1.Entity)({ name: "INSTANT_PLAY_LOBBY" })
 ], LobbyInstantPlay);
+exports.LobbyInstantPlay = LobbyInstantPlay;

@@ -1,19 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.listLobbyPlay = listLobbyPlay;
-exports.listInstantPlay = listInstantPlay;
-exports.listFriendPlay = listFriendPlay;
-exports.listClubPlay = listClubPlay;
-exports.getLobbyPlayById = getLobbyPlayById;
-exports.getFriendPlayById = getFriendPlayById;
-exports.getInstantPlayById = getInstantPlayById;
-exports.countLobbyPlayByUser = countLobbyPlayByUser;
-exports.countWinPlayInLobby = countWinPlayInLobby;
-exports.countFriendPlayByUser = countFriendPlayByUser;
-exports.countWinPlayInFriend = countWinPlayInFriend;
-exports.countInstantPlayByUser = countInstantPlayByUser;
-exports.countWinPlayInInstant = countWinPlayInInstant;
-exports.getClubPlayById = getClubPlayById;
+exports.getClubPlayById = exports.countWinPlayInInstant = exports.countInstantPlayByUser = exports.countWinPlayInFriend = exports.countFriendPlayByUser = exports.countWinPlayInLobby = exports.countLobbyPlayByUser = exports.getInstantPlayById = exports.getFriendPlayById = exports.getLobbyPlayById = exports.listClubPlay = exports.listFriendPlay = exports.listInstantPlay = exports.listLobbyPlay = void 0;
 const room_lobby_play_entity_1 = require("src/domain/lobby/room-lobby-play.entity");
 const room_friend_play_entity_1 = require("src/domain/friend/room-friend-play.entity");
 const room_instant_play_entity_1 = require("src/domain/instant/room-instant-play.entity");
@@ -38,6 +25,7 @@ async function listLobbyPlay(query) {
         .getManyAndCount();
     return rooms;
 }
+exports.listLobbyPlay = listLobbyPlay;
 async function listFriendPlay(query) {
     const roomRepository = room_friend_play_entity_1.RoomFriendPlay.getRepository();
     const rooms = await roomRepository
@@ -53,6 +41,7 @@ async function listFriendPlay(query) {
         .getManyAndCount();
     return rooms;
 }
+exports.listFriendPlay = listFriendPlay;
 async function listInstantPlay(query) {
     const roomRepository = room_instant_play_entity_1.RoomInstantPlay.getRepository();
     const rooms = await roomRepository
@@ -73,6 +62,7 @@ async function listInstantPlay(query) {
         .getManyAndCount();
     return rooms;
 }
+exports.listInstantPlay = listInstantPlay;
 async function listClubPlay(query) {
     const roomRepository = club_play_entity_1.ClubPlay.getRepository();
     const rooms = await roomRepository
@@ -94,12 +84,15 @@ async function listClubPlay(query) {
         .getManyAndCount();
     return rooms;
 }
+exports.listClubPlay = listClubPlay;
 async function getClubPlayById(query) {
     return await club_play_entity_1.ClubPlay.findOne(query);
 }
+exports.getClubPlayById = getClubPlayById;
 async function getLobbyPlayById(query) {
     return await room_lobby_play_entity_1.RoomLobbyPlay.findOne(query);
 }
+exports.getLobbyPlayById = getLobbyPlayById;
 async function countLobbyPlayByUser(query) {
     const roomRepository = room_lobby_play_entity_1.RoomLobbyPlay.getRepository();
     return await roomRepository
@@ -107,14 +100,17 @@ async function countLobbyPlayByUser(query) {
         .where(`"USERS" @> :userIdToFind`, { userIdToFind: JSON.stringify([{ USER_ID: query.USER_ID }]) })
         .getCount();
 }
+exports.countLobbyPlayByUser = countLobbyPlayByUser;
 async function countWinPlayInLobby(query) {
     return await room_lobby_play_entity_1.RoomLobbyPlay.count({
         where: { WIN_USER: query.USER_ID }
     });
 }
+exports.countWinPlayInLobby = countWinPlayInLobby;
 async function getFriendPlayById(query) {
     return await room_friend_play_entity_1.RoomFriendPlay.findOne(query);
 }
+exports.getFriendPlayById = getFriendPlayById;
 async function countFriendPlayByUser(query) {
     const roomRepository = room_friend_play_entity_1.RoomFriendPlay.getRepository();
     return await roomRepository
@@ -122,14 +118,17 @@ async function countFriendPlayByUser(query) {
         .where(`"USERS" @> :userIdToFind`, { userIdToFind: JSON.stringify([{ USER_ID: query.USER_ID }]) })
         .getCount();
 }
+exports.countFriendPlayByUser = countFriendPlayByUser;
 async function countWinPlayInFriend(query) {
     return await room_friend_play_entity_1.RoomFriendPlay.count({
         where: { WIN_USER: query.USER_ID }
     });
 }
+exports.countWinPlayInFriend = countWinPlayInFriend;
 async function getInstantPlayById(query) {
     return await room_instant_play_entity_1.RoomInstantPlay.findOne(query);
 }
+exports.getInstantPlayById = getInstantPlayById;
 async function countInstantPlayByUser(query) {
     const roomRepository = room_instant_play_entity_1.RoomInstantPlay.getRepository();
     return await roomRepository
@@ -137,8 +136,10 @@ async function countInstantPlayByUser(query) {
         .where(`"USERS" @> :userIdToFind`, { userIdToFind: JSON.stringify([{ USER_ID: query.USER_ID }]) })
         .getCount();
 }
+exports.countInstantPlayByUser = countInstantPlayByUser;
 async function countWinPlayInInstant(query) {
     return await room_instant_play_entity_1.RoomInstantPlay.count({
         where: { WIN_USER: query.USER_ID }
     });
 }
+exports.countWinPlayInInstant = countWinPlayInInstant;

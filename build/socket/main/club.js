@@ -1,7 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.clubJoint = clubJoint;
-exports.clubLeave = clubLeave;
+exports.clubLeave = exports.clubJoint = void 0;
 const auth_token_1 = require("src/middleware/auth.token");
 async function clubJoint(socket, data) {
     try {
@@ -30,6 +29,7 @@ async function clubJoint(socket, data) {
         socket.emit('res:error-message', { status: false, message: error?.message ?? "Unknown Error." });
     }
 }
+exports.clubJoint = clubJoint;
 async function clubLeave(socket, data) {
     try {
         const { Authtoken: token } = JSON.parse(data);
@@ -57,3 +57,4 @@ async function clubLeave(socket, data) {
         socket.emit('res:error-message', { status: false, message: error?.message ?? "Unknown Error." });
     }
 }
+exports.clubLeave = clubLeave;

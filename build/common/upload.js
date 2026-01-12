@@ -3,9 +3,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.uploadFile = uploadFile;
-exports.deleteFile = deleteFile;
-exports.uploadMultipleFile = uploadMultipleFile;
+exports.uploadMultipleFile = exports.deleteFile = exports.uploadFile = void 0;
 const client_s3_1 = require("@aws-sdk/client-s3");
 const s3_request_presigner_1 = require("@aws-sdk/s3-request-presigner");
 const multer_1 = __importDefault(require("multer"));
@@ -76,6 +74,7 @@ async function uploadFile(req, res, next) {
         next(error);
     }
 }
+exports.uploadFile = uploadFile;
 async function uploadMultipleFile(req, res, next) {
     try {
         const upload = util_1.default.promisify(multerFile.fields([{ name: "FILES" }, { name: "FILE", maxCount: 1 }]));
@@ -140,6 +139,7 @@ async function uploadMultipleFile(req, res, next) {
         next(error);
     }
 }
+exports.uploadMultipleFile = uploadMultipleFile;
 // delete File
 async function deleteFile(bucketName, key) {
     try {
@@ -150,3 +150,4 @@ async function deleteFile(bucketName, key) {
         return false;
     }
 }
+exports.deleteFile = deleteFile;

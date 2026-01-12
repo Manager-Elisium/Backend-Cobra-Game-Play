@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.devicePausedFriendPlay = devicePausedFriendPlay;
+exports.devicePausedFriendPlay = void 0;
 const auth_token_1 = require("src/middleware/auth.token");
 const room_friend_play_entity_1 = require("src/repository/room-friend-play.entity");
 const PAUSE_TIMEOUT_MS = 60 * 1000; // 1 minute in milliseconds
@@ -312,3 +312,4 @@ async function devicePausedFriendPlay(io, socket, data) {
         });
     }
 }
+exports.devicePausedFriendPlay = devicePausedFriendPlay;

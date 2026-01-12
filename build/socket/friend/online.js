@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.onlineFriendPlay = onlineFriendPlay;
+exports.onlineFriendPlay = void 0;
 const auth_token_1 = require("src/middleware/auth.token");
 async function onlineFriendPlay(io, socket, data) {
     try {
@@ -21,3 +21,4 @@ async function onlineFriendPlay(io, socket, data) {
         socket.emit('res:error-message', { status: false, message: error?.message ?? "Unknown Error." });
     }
 }
+exports.onlineFriendPlay = onlineFriendPlay;

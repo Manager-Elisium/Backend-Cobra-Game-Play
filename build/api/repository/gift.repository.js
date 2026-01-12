@@ -1,8 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.insertManyById = insertManyById;
-exports.getGiftByUserId = getGiftByUserId;
-exports.multipleDeleted = multipleDeleted;
+exports.multipleDeleted = exports.getGiftByUserId = exports.insertManyById = void 0;
 const gift_entity_1 = require("src/domain/user/gift.entity");
 async function insertManyById(data) {
     const giftRepository = gift_entity_1.GiftCollect.getRepository();
@@ -13,9 +11,11 @@ async function insertManyById(data) {
         .values(data)
         .execute();
 }
+exports.insertManyById = insertManyById;
 async function getGiftByUserId(query) {
     return await gift_entity_1.GiftCollect.find(query);
 }
+exports.getGiftByUserId = getGiftByUserId;
 async function multipleDeleted(data) {
     return await gift_entity_1.GiftCollect.createQueryBuilder()
         .delete()
@@ -24,3 +24,4 @@ async function multipleDeleted(data) {
         .returning("*")
         .execute();
 }
+exports.multipleDeleted = multipleDeleted;

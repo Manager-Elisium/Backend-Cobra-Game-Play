@@ -13,7 +13,6 @@ exports.UserRecord = void 0;
 const typeorm_1 = require("typeorm");
 let UserRecord = class UserRecord extends typeorm_1.BaseEntity {
 };
-exports.UserRecord = UserRecord;
 __decorate([
     (0, typeorm_1.PrimaryGeneratedColumn)("uuid", { name: "ID" }),
     __metadata("design:type", String)
@@ -162,7 +161,8 @@ __decorate([
     (0, typeorm_1.Column)({ type: 'jsonb', default: [] }),
     __metadata("design:type", Object)
 ], UserRecord.prototype, "SEND_RECEIVE_COIN", void 0);
-exports.UserRecord = UserRecord = __decorate([
+UserRecord = __decorate([
     (0, typeorm_1.Entity)({ name: "USER_RECORD" })
 ], UserRecord);
+exports.UserRecord = UserRecord;
 // 2023-08-03 12:30:16.547201+00

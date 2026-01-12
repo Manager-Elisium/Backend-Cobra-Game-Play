@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.disconnectFriendPlay = disconnectFriendPlay;
+exports.disconnectFriendPlay = void 0;
 const room_friend_play_entity_1 = require("src/repository/room-friend-play.entity");
 async function disconnectFriendPlay(io, socket) {
     try {
@@ -222,3 +222,4 @@ async function disconnectFriendPlay(io, socket) {
         socket.emit('res:error-message', { status: false, message: error?.message ?? "Unknown Error." });
     }
 }
+exports.disconnectFriendPlay = disconnectFriendPlay;

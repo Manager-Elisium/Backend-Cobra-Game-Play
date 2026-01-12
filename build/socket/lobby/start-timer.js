@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.startTimerLobbyPlay = startTimerLobbyPlay;
+exports.startTimerLobbyPlay = void 0;
 const auth_token_1 = require("src/middleware/auth.token");
 const temp_lobby_play_entity_1 = require("src/repository/temp-lobby-play.entity");
 const room_lobby_play_entity_1 = require("src/repository/room-lobby-play.entity");
@@ -179,6 +179,7 @@ async function startTimerLobbyPlay(io, socket, data) {
         socket.emit('res:error-message', { status: false, message: error?.message ?? "Unknown Error." });
     }
 }
+exports.startTimerLobbyPlay = startTimerLobbyPlay;
 /**
  *
  * @desc NO WAITING PLAYER (JOINT DIRECT)

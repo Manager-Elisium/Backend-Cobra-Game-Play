@@ -13,7 +13,6 @@ exports.RoomInstantPlay = void 0;
 const typeorm_1 = require("typeorm");
 let RoomInstantPlay = class RoomInstantPlay extends typeorm_1.BaseEntity {
 };
-exports.RoomInstantPlay = RoomInstantPlay;
 __decorate([
     (0, typeorm_1.PrimaryGeneratedColumn)("uuid", { name: "ID" }),
     __metadata("design:type", String)
@@ -82,9 +81,10 @@ __decorate([
     (0, typeorm_1.Column)('timestamp with time zone', { nullable: true }),
     __metadata("design:type", Date)
 ], RoomInstantPlay.prototype, "GAME_FINISH_DATE", void 0);
-exports.RoomInstantPlay = RoomInstantPlay = __decorate([
+RoomInstantPlay = __decorate([
     (0, typeorm_1.Entity)({ name: "INSTANT_PLAY_ROOM" })
 ], RoomInstantPlay);
+exports.RoomInstantPlay = RoomInstantPlay;
 // Insert a new row with an array of JSON objects:
 // const myEntity = new MyEntity();
 // myEntity.data = [

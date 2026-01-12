@@ -1,7 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.listCareerHistory = listCareerHistory;
-exports.getCareerHistory = getCareerHistory;
+exports.getCareerHistory = exports.listCareerHistory = void 0;
 const encrypt_1 = require("src/common/encrypt");
 const career_history_service_1 = require("../service/career-history.service");
 async function listCareerHistory(req, res, next) {
@@ -22,6 +21,7 @@ async function listCareerHistory(req, res, next) {
         return res.json(await (0, encrypt_1.encrypt)(JSON.stringify({ status: false, message: error?.message ?? "" })));
     }
 }
+exports.listCareerHistory = listCareerHistory;
 async function getCareerHistory(req, res, next) {
     try {
         const { token } = req.body;
@@ -39,3 +39,4 @@ async function getCareerHistory(req, res, next) {
         return res.json(await (0, encrypt_1.encrypt)(JSON.stringify({ status: false, message: error?.message ?? "" })));
     }
 }
+exports.getCareerHistory = getCareerHistory;

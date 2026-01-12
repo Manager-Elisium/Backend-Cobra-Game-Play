@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.setupMainNamespace = setupMainNamespace;
+exports.setupMainNamespace = void 0;
 const online_1 = require("./main/online");
 const disconnect_1 = require("./main/disconnect");
 const club_1 = require("./main/club");
@@ -28,3 +28,4 @@ function setupMainNamespace(io, namespace) {
         });
     });
 }
+exports.setupMainNamespace = setupMainNamespace;

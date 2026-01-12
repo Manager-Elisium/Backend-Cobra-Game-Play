@@ -12,7 +12,7 @@ exports.AppDataSource = new typeorm_1.DataSource({
     database: process.env.PGDATABASE,
     synchronize: true,
     logging: false,
-    entities: ["build/domain/**/*.js"],
+    entities: [__dirname + "/../domain/**/*.js"],
     migrations: [],
     subscribers: [],
     ssl: {

@@ -3,9 +3,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getSeasonService = getSeasonService;
-exports.buySeasonPassService = buySeasonPassService;
-exports.collectSeasonRewardService = collectSeasonRewardService;
+exports.collectSeasonRewardService = exports.buySeasonPassService = exports.getSeasonService = void 0;
 const standard_error_1 = __importDefault(require("src/common/standard-error"));
 const error_type_1 = require("src/common/error-type");
 const user_repository_1 = require("../repository/user.repository");
@@ -14,13 +12,13 @@ const game_winner_1 = require("src/util/game-winner");
 async function getSeasonService(data) {
     try {
         const { USER_ID } = data;
-        // http://localhost:3002/season/get-season-reward
-        // http://65.2.149.164/season/get-season-reward
+        // http://192.168.1.46:3001/season/get-season-reward
+        // http://192.168.1.46:3001/season/get-season-reward
         const getOne = await (0, user_repository_1.getOneUserRecord)({ USER_ID });
         if (!getOne) {
             throw new standard_error_1.default(error_type_1.ErrorCodes.API_VALIDATION_ERROR, "User Record is not found.");
         }
-        const listOfSeasson = await axios_1.default.get(`http://65.2.149.164/season/get-season-reward`, {
+        const listOfSeasson = await axios_1.default.get(`http://192.168.1.46:3001/season/get-season-reward`, {
             headers: {
                 "Content-Type": "application/json",
             },
@@ -70,10 +68,11 @@ async function getSeasonService(data) {
         throw new standard_error_1.default(error_type_1.ErrorCodes.API_VALIDATION_ERROR, error?.message ?? "Season Service is not reachable.");
     }
 }
+exports.getSeasonService = getSeasonService;
 async function buySeasonPassService(data) {
     try {
         const { USER_ID } = data;
-        // http://localhost:3002/season/get-season-reward
+        // http://192.168.1.46:3001/season/get-season-reward
         const getOne = await (0, user_repository_1.getOneUserRecord)({ USER_ID });
         if (!getOne) {
             throw new standard_error_1.default(error_type_1.ErrorCodes.API_VALIDATION_ERROR, "User Record is not found.");
@@ -87,10 +86,11 @@ async function buySeasonPassService(data) {
         throw new standard_error_1.default(error_type_1.ErrorCodes.API_VALIDATION_ERROR, error?.message ?? "Season Service is not reachable.");
     }
 }
+exports.buySeasonPassService = buySeasonPassService;
 async function collectSeasonRewardService(data) {
     try {
         const { USER_ID, seasonCollected, seasonDiamond } = data;
-        // http://localhost:3002/season/get-season-reward
+        // http://192.168.1.46:3001/season/get-season-reward
         const getOne = await (0, user_repository_1.getOneUserRecord)({ USER_ID });
         if (!getOne) {
             throw new standard_error_1.default(error_type_1.ErrorCodes.API_VALIDATION_ERROR, "User Record is not found.");
@@ -135,7 +135,7 @@ async function collectSeasonRewardService(data) {
             TOTAL_COIN: getOne?.TOTAL_COIN + collectCoin,
             CURRENT_DIAMOND: getOne?.CURRENT_DIAMOND + collectDiamond,
             CURRENT_COIN: getOne?.CURRENT_COIN + collectCoin,
-            CURRENT_SEASON_COLLECTED_DIAMOND: (getOne?.CURRENT_SEASON_COLLECTED_DIAMOND ?? 0) + (seasonDiamond ?? 0),
+            CURRENT_SEASON_COLLECTED_DIAMOND: getOne?.CURRENT_SEASON_COLLECTED_DIAMOND + seasonDiamond ?? 0,
             CURRENT_SEASON_WIN_COIN: getOne?.CURRENT_SEASON_WIN_COIN + collectCoin,
             CURRENT_SEASON_REWARDS_COLLECTED: [
                 ...getOne?.CURRENT_SEASON_REWARDS_COLLECTED,
@@ -148,3 +148,4 @@ async function collectSeasonRewardService(data) {
         throw new standard_error_1.default(error_type_1.ErrorCodes.API_VALIDATION_ERROR, error?.message ?? "Season Service is not reachable.");
     }
 }
+exports.collectSeasonRewardService = collectSeasonRewardService;

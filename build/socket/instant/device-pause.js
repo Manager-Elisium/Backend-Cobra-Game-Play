@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.devicePausedInstantPlay = devicePausedInstantPlay;
+exports.devicePausedInstantPlay = void 0;
 const auth_token_1 = require("src/middleware/auth.token");
 const room_instant_play_entity_1 = require("src/repository/room-instant-play.entity");
 const PAUSE_TIMEOUT_MS = 60 * 1000; // 1 minute in milliseconds
@@ -127,3 +127,4 @@ async function devicePausedInstantPlay(io, socket, data) {
         });
     }
 }
+exports.devicePausedInstantPlay = devicePausedInstantPlay;

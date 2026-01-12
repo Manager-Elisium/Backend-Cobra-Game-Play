@@ -3,8 +3,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.buyVipCardService = buyVipCardService;
-exports.myVipCardService = myVipCardService;
+exports.myVipCardService = exports.buyVipCardService = void 0;
 const standard_error_1 = __importDefault(require("src/common/standard-error"));
 const error_type_1 = require("src/common/error-type");
 const vip_card_repository_1 = require("../repository/vip-card.repository");
@@ -37,6 +36,7 @@ async function buyVipCardService(data) {
     });
     return buyVipCard;
 }
+exports.buyVipCardService = buyVipCardService;
 async function myVipCardService(data) {
     try {
         const { USER_ID } = data;
@@ -46,7 +46,7 @@ async function myVipCardService(data) {
             },
         };
         const listofBuyCard = await (0, vip_card_repository_1.getByUserId)(query);
-        const listOfVipCard = await axios_1.default.get("http://65.2.149.164/vip_card/list", {
+        const listOfVipCard = await axios_1.default.get("http://192.168.1.46:3001/vip_card/list", {
             headers: {
                 "Content-Type": "application/json",
             },
@@ -60,3 +60,4 @@ async function myVipCardService(data) {
         throw new standard_error_1.default(error_type_1.ErrorCodes.API_VALIDATION_ERROR, "Vip Service is not reachable.");
     }
 }
+exports.myVipCardService = myVipCardService;

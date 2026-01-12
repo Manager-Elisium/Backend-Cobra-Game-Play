@@ -13,7 +13,6 @@ exports.UserVipCard = void 0;
 const typeorm_1 = require("typeorm");
 let UserVipCard = class UserVipCard extends typeorm_1.BaseEntity {
 };
-exports.UserVipCard = UserVipCard;
 __decorate([
     (0, typeorm_1.PrimaryGeneratedColumn)("uuid", { name: "ID" }),
     __metadata("design:type", String)
@@ -46,6 +45,7 @@ __decorate([
     (0, typeorm_1.Column)('timestamp with time zone', { nullable: true }),
     __metadata("design:type", Date)
 ], UserVipCard.prototype, "UPDATE_DATE", void 0);
-exports.UserVipCard = UserVipCard = __decorate([
+UserVipCard = __decorate([
     (0, typeorm_1.Entity)({ name: "USER_VIP_CARD" })
 ], UserVipCard);
+exports.UserVipCard = UserVipCard;

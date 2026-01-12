@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.setupLobbyNamespace = setupLobbyNamespace;
+exports.setupLobbyNamespace = void 0;
 const start_timer_1 = require("./lobby/start-timer");
 const leave_namespace_1 = require("./lobby/leave-namespace");
 const disconnect_1 = require("./lobby/disconnect");
@@ -43,3 +43,4 @@ function setupLobbyNamespace(io, namespace) {
         socket.on('disconnect', () => (0, disconnect_1.disconnectLobbyPlay)(io, socket)); // TODO -- Array New
     });
 }
+exports.setupLobbyNamespace = setupLobbyNamespace;

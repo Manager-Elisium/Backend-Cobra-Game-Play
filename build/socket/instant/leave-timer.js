@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.leaveTimerInstantPlay = leaveTimerInstantPlay;
+exports.leaveTimerInstantPlay = void 0;
 const auth_token_1 = require("src/middleware/auth.token");
 const temp_instant_play_entity_1 = require("src/repository/temp-instant-play.entity");
 const reward_service_1 = require("src/util/reward.service");
@@ -29,3 +29,4 @@ async function leaveTimerInstantPlay(io, socket, data) {
         socket.emit('res:error-message', { status: false, message: error?.message ?? "Unknown Error." });
     }
 }
+exports.leaveTimerInstantPlay = leaveTimerInstantPlay;

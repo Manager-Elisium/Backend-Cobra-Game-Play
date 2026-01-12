@@ -3,14 +3,9 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getLevel = getLevel;
-exports.getXP = getXP;
-exports.getXPForSeason = getXPForSeason;
-exports.instantGameWinner = instantGameWinner;
-exports.lobbyGameWinner = lobbyGameWinner;
-exports.clubGameWinner = clubGameWinner;
+exports.clubGameWinner = exports.lobbyGameWinner = exports.instantGameWinner = exports.getXPForSeason = exports.getXP = exports.getLevel = void 0;
 const user_repository_1 = require("src/api/repository/user.repository");
-const url = 'http://13.126.197.184';
+const url = 'http://192.168.1.46:3005';
 const axios_1 = __importDefault(require("axios"));
 async function instantGameWinner(userIdList) {
     try {
@@ -49,6 +44,7 @@ async function instantGameWinner(userIdList) {
     }
     ;
 }
+exports.instantGameWinner = instantGameWinner;
 async function lobbyGameWinner(entryFees, userIdList) {
     try {
         const WIN_USERS_COIN = [];
@@ -86,6 +82,7 @@ async function lobbyGameWinner(entryFees, userIdList) {
     }
     ;
 }
+exports.lobbyGameWinner = lobbyGameWinner;
 async function clubGameWinner(entryFees, userIdList) {
     try {
         const WIN_USERS_COIN = [];
@@ -120,17 +117,20 @@ async function clubGameWinner(entryFees, userIdList) {
     }
     ;
 }
+exports.clubGameWinner = clubGameWinner;
 async function getLevel(currentXP) {
     let currentLevel = currentXP < 100 ? 0 : Math.round(Math.log(currentXP / 100) / Math.log(1 + 0.30)) + 1;
     console.log(`The level is approximately ${currentLevel}`);
     return currentLevel;
 }
+exports.getLevel = getLevel;
 async function getXP(currentLevel) {
     let startXP = Math.round(((100 * Math.pow(1 + 0.30, currentLevel - 1)) / 10)) * 10;
     let targetXP = Math.round(((100 * Math.pow(1 + 0.30, currentLevel)) / 10)) * 10;
     console.log(`The xp is approximately ${startXP} ${targetXP}`);
     return { startXP, targetXP };
 }
+exports.getXP = getXP;
 async function getXPForSeason(currentLevel) {
     if (currentLevel < 16) {
         let startXP = Math.round(((100 * Math.pow(1 + 0.1274, currentLevel - 1)) / 10)) * 10;
@@ -145,3 +145,4 @@ async function getXPForSeason(currentLevel) {
         return { startXP, targetXP };
     }
 }
+exports.getXPForSeason = getXPForSeason;

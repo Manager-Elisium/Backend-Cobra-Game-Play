@@ -1,10 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.createTicket = createTicket;
-exports.listTicket = listTicket;
-exports.paginationTicket = paginationTicket;
-exports.getTicket = getTicket;
-exports.updateTicket = updateTicket;
+exports.updateTicket = exports.getTicket = exports.paginationTicket = exports.listTicket = exports.createTicket = void 0;
 const encrypt_1 = require("src/common/encrypt");
 const bug_service_1 = require("../service/bug.service");
 const upload_1 = require("../common/upload");
@@ -25,6 +21,7 @@ async function createTicket(req, res, next) {
         return res.json(await (0, encrypt_1.encrypt)(JSON.stringify({ status: false, message: error?.message ?? "" })));
     }
 }
+exports.createTicket = createTicket;
 async function listTicket(req, res, next) {
     try {
         const { token } = req.body;
@@ -37,6 +34,7 @@ async function listTicket(req, res, next) {
         return res.json(await (0, encrypt_1.encrypt)(JSON.stringify({ status: false, message: error?.message ?? "" })));
     }
 }
+exports.listTicket = listTicket;
 async function paginationTicket(req, res, next) {
     try {
         const { take, page } = req.query;
@@ -51,6 +49,7 @@ async function paginationTicket(req, res, next) {
         return res.json(await (0, encrypt_1.encrypt)(JSON.stringify({ status: false, message: error?.message ?? "" })));
     }
 }
+exports.paginationTicket = paginationTicket;
 async function getTicket(req, res, next) {
     try {
         const { id } = req.params;
@@ -62,6 +61,7 @@ async function getTicket(req, res, next) {
         return res.json({ status: false, message: error?.message ?? "" });
     }
 }
+exports.getTicket = getTicket;
 async function updateTicket(req, res, next) {
     try {
         const { id } = req.params;
@@ -73,3 +73,4 @@ async function updateTicket(req, res, next) {
         return res.json({ status: false, message: error?.message ?? "" });
     }
 }
+exports.updateTicket = updateTicket;

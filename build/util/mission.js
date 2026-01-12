@@ -17,7 +17,7 @@ var TaskKey;
     TaskKey["EVADE_PENALTY_GAME"] = "Evade Penalty";
     TaskKey["WIN_LOBBY_GAME_IN_ROW"] = "Win Row Lobby Game";
     TaskKey["JOINT_CLUB"] = "Joint Club";
-})(TaskKey || (exports.TaskKey = TaskKey = {}));
+})(TaskKey = exports.TaskKey || (exports.TaskKey = {}));
 async function dailyMissionService(data) {
     try {
     }

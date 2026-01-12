@@ -10,7 +10,7 @@ export const AppDataSource = new DataSource({
   database: process.env.PGDATABASE,
   synchronize: true,
   logging: false,
-  entities: ["src/domain/**/*.ts"],
+  entities: [__dirname + "/../domain/**/*.js"],
   migrations: [],
   subscribers: [],
   ssl: {

@@ -1,20 +1,19 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.create = create;
-exports.findOne = findOne;
-exports.updateById = updateById;
-exports.updateAndReturnById = updateAndReturnById;
-exports.getRoomByConnectionId = getRoomByConnectionId;
+exports.getRoomByConnectionId = exports.updateAndReturnById = exports.updateById = exports.findOne = exports.create = void 0;
 const room_instant_play_entity_1 = require("src/domain/instant/room-instant-play.entity");
 async function create(data) {
     return await room_instant_play_entity_1.RoomInstantPlay.save(data);
 }
+exports.create = create;
 async function findOne(data) {
     return room_instant_play_entity_1.RoomInstantPlay.findOneBy(data);
 }
+exports.findOne = findOne;
 async function updateById(id, data) {
     return room_instant_play_entity_1.RoomInstantPlay.update(id, data);
 }
+exports.updateById = updateById;
 async function updateAndReturnById(id, data) {
     return room_instant_play_entity_1.RoomInstantPlay
         .createQueryBuilder()
@@ -24,6 +23,7 @@ async function updateAndReturnById(id, data) {
         .returning('*')
         .execute();
 }
+exports.updateAndReturnById = updateAndReturnById;
 async function getRoomByConnectionId(query) {
     const roomRepository = room_instant_play_entity_1.RoomInstantPlay.getRepository();
     const rooms = await roomRepository
@@ -39,3 +39,4 @@ async function getRoomByConnectionId(query) {
         .getOne();
     return rooms;
 }
+exports.getRoomByConnectionId = getRoomByConnectionId;

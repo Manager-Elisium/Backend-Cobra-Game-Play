@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.disconnectInstantPlay = disconnectInstantPlay;
+exports.disconnectInstantPlay = void 0;
 const room_instant_play_entity_1 = require("src/repository/room-instant-play.entity");
 const temp_instant_play_entity_1 = require("src/repository/temp-instant-play.entity");
 const game_winner_1 = require("src/util/game-winner");
@@ -240,3 +240,4 @@ async function disconnectInstantPlay(io, socket) {
         socket.emit('res:error-message', { status: false, message: error?.message ?? "Unknown Error." });
     }
 }
+exports.disconnectInstantPlay = disconnectInstantPlay;

@@ -3,11 +3,11 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.startTimerClubPlay = startTimerClubPlay;
+exports.startTimerClubPlay = void 0;
 const auth_token_1 = require("src/middleware/auth.token");
 const room_club_play_entity_1 = require("src/repository/room-club-play.entity");
 const axios_1 = __importDefault(require("axios"));
-const url = "http://13.126.197.184";
+const url = "http://192.168.1.46:3005";
 // import { getOneTable, getUserAndClubById, updateAndReturnByIdTable, updateTable } from "src/repository/club-table.repository";
 async function startTimerClubPlay(io, socket, data) {
     try {
@@ -165,3 +165,4 @@ async function startTimerClubPlay(io, socket, data) {
         });
     }
 }
+exports.startTimerClubPlay = startTimerClubPlay;

@@ -3,8 +3,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.listCareerService = listCareerService;
-exports.getCareerService = getCareerService;
+exports.getCareerService = exports.listCareerService = void 0;
 const standard_error_1 = __importDefault(require("src/common/standard-error"));
 const error_type_1 = require("src/common/error-type");
 const career_history_repository_1 = require("../repository/career-history.repository");
@@ -57,6 +56,7 @@ async function listCareerService(data) {
         throw new standard_error_1.default(error_type_1.ErrorCodes.API_VALIDATION_ERROR, error?.message ?? "Error - Career Service List.");
     }
 }
+exports.listCareerService = listCareerService;
 async function getCareerService(data) {
     try {
         const { USER_ID, ID, type } = data;
@@ -96,12 +96,12 @@ async function getCareerService(data) {
                 COBRA_PENALTY: userDetail?.[0]?.PENALTY_COUNT,
                 NO_OF_PLAYER: getHistory?.USERS.length,
                 WINNER_NO: getHistory?.ROUND_INFO?.at(getHistory?.ROUND_INFO?.length - 1)?.PARTICIPATED_USERS?.filter((data) => (data.USER_ID === USER_ID))?.[0]?.RANK,
-                LEVEL_XP: 0, // TODO
-                CARD_XP: 0, // TODO
+                LEVEL_XP: 0,
+                CARD_XP: 0,
                 IS_VIP_CARD: !!getVipCard?.EXPIRY_DATE,
                 VIPCARD_NAME: "GOLD",
                 VIPCARD_EXPIRE_DATE: getVipCard?.EXPIRY_DATE ?? "",
-                TOTAL_GAME: 0, // await countFriendPlayByUser(data),
+                TOTAL_GAME: 0,
                 TOTAL_WIN: 0 //  await countWinPlayInFriend(data)
             };
         }
@@ -123,8 +123,8 @@ async function getCareerService(data) {
                 COBRA_PENALTY: userDetail?.[0]?.PENALTY_COUNT,
                 NO_OF_PLAYER: getHistory?.USERS.length,
                 WINNER_NO: getHistory?.ROUND_INFO?.at(getHistory?.ROUND_INFO?.length - 1)?.PARTICIPATED_USERS?.filter((data) => (data.USER_ID === USER_ID))?.[0]?.RANK,
-                LEVEL_XP: 0, // TODO
-                CARD_XP: 0, // TODO
+                LEVEL_XP: 0,
+                CARD_XP: 0,
                 IS_VIP_CARD: !!getVipCard?.EXPIRY_DATE,
                 VIPCARD_NAME: "GOLD",
                 VIPCARD_EXPIRE_DATE: getVipCard?.EXPIRY_DATE ?? "",
@@ -150,8 +150,8 @@ async function getCareerService(data) {
                 COBRA_PENALTY: userDetail?.[0]?.PENALTY_COUNT,
                 NO_OF_PLAYER: getHistory?.USERS.length,
                 WINNER_NO: getHistory?.ROUND_INFO?.at(getHistory?.ROUND_INFO?.length - 1)?.PARTICIPATED_USERS?.filter((data) => (data.USER_ID === USER_ID))?.[0]?.RANK,
-                LEVEL_XP: 0, // TODO
-                CARD_XP: 0, // TODO
+                LEVEL_XP: 0,
+                CARD_XP: 0,
                 IS_VIP_CARD: !!getVipCard?.EXPIRY_DATE,
                 VIPCARD_NAME: "GOLD",
                 VIPCARD_EXPIRE_DATE: getVipCard?.EXPIRY_DATE ?? "",
@@ -181,3 +181,4 @@ async function getCareerService(data) {
         throw new standard_error_1.default(error_type_1.ErrorCodes.API_VALIDATION_ERROR, error?.message ?? "Error - Career Get Service.");
     }
 }
+exports.getCareerService = getCareerService;

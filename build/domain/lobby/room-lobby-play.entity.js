@@ -13,7 +13,6 @@ exports.RoomLobbyPlay = void 0;
 const typeorm_1 = require("typeorm");
 let RoomLobbyPlay = class RoomLobbyPlay extends typeorm_1.BaseEntity {
 };
-exports.RoomLobbyPlay = RoomLobbyPlay;
 __decorate([
     (0, typeorm_1.PrimaryGeneratedColumn)("uuid", { name: "ID" }),
     __metadata("design:type", String)
@@ -102,6 +101,7 @@ __decorate([
     (0, typeorm_1.Column)('timestamp with time zone', { nullable: true }),
     __metadata("design:type", Date)
 ], RoomLobbyPlay.prototype, "GAME_FINISH_DATE", void 0);
-exports.RoomLobbyPlay = RoomLobbyPlay = __decorate([
+RoomLobbyPlay = __decorate([
     (0, typeorm_1.Entity)({ name: "LOBBY_PLAY_ROOM" })
 ], RoomLobbyPlay);
+exports.RoomLobbyPlay = RoomLobbyPlay;

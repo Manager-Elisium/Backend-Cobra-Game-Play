@@ -1,7 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.listShopCard = listShopCard;
-exports.buyShopCard = buyShopCard;
+exports.buyShopCard = exports.listShopCard = void 0;
 const encrypt_1 = require("src/common/encrypt");
 const shop_service_1 = require("../service/shop.service");
 async function listShopCard(req, res, next) {
@@ -14,6 +13,7 @@ async function listShopCard(req, res, next) {
         return res.json(await (0, encrypt_1.encrypt)(JSON.stringify({ status: false, message: error?.message ?? "" })));
     }
 }
+exports.listShopCard = listShopCard;
 async function buyShopCard(req, res, next) {
     try {
         const { public_key, content, token } = req.body;
@@ -29,3 +29,4 @@ async function buyShopCard(req, res, next) {
         return res.json(await (0, encrypt_1.encrypt)(JSON.stringify({ status: false, message: error?.message ?? "" })));
     }
 }
+exports.buyShopCard = buyShopCard;

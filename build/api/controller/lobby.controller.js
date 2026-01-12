@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.listLobby = listLobby;
+exports.listLobby = void 0;
 const encrypt_1 = require("src/common/encrypt");
 const lobby_service_1 = require("../service/lobby.service");
 async function listLobby(req, res, next) {
@@ -12,3 +12,4 @@ async function listLobby(req, res, next) {
         return res.json(await (0, encrypt_1.encrypt)(JSON.stringify({ status: false, message: error?.message ?? "" })));
     }
 }
+exports.listLobby = listLobby;

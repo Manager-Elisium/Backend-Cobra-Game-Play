@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.setupPlayWithFriendNamespace = setupPlayWithFriendNamespace;
+exports.setupPlayWithFriendNamespace = void 0;
 const create_room_1 = require("./friend/create-room");
 const online_1 = require("./friend/online");
 const disband_room_1 = require("./friend/disband-room");
@@ -57,3 +57,4 @@ function setupPlayWithFriendNamespace(io, namespace) {
         socket.on('disconnect', () => (0, disconnect_1.disconnectFriendPlay)(io, socket)); // TOdo
     });
 }
+exports.setupPlayWithFriendNamespace = setupPlayWithFriendNamespace;

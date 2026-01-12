@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.onlineInstantPlay = onlineInstantPlay;
+exports.onlineInstantPlay = void 0;
 const auth_token_1 = require("src/middleware/auth.token");
 async function onlineInstantPlay(io, socket, data) {
     try {
@@ -21,3 +21,4 @@ async function onlineInstantPlay(io, socket, data) {
         socket.emit('res:error-message', { status: false, message: error?.message ?? "Unknown Error." });
     }
 }
+exports.onlineInstantPlay = onlineInstantPlay;
