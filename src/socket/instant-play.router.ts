@@ -14,6 +14,7 @@ import { leaveNameSpaceInstantPlay } from './instant/leave-namespace';
 import { chatInstantPlay } from './instant/chat-room';
 import { devicePausedInstantPlay } from './instant/device-pause';
 import { deviceResumedInstantPlay } from './instant/device-resume';
+import { stateSyncInstantPlay, fullStateInstantPlay } from './instant/state-sync';
 
 export function setupInstantPlayNamespace(io: any, namespace: Namespace) {
 
@@ -44,6 +45,10 @@ export function setupInstantPlayNamespace(io: any, namespace: Namespace) {
         // device pause/resume
         socket.on('req:device-paused-instant-play', (data: any) => devicePausedInstantPlay(io, socket, data));
         socket.on('req:device-resumed-instant-play', (data: any) => deviceResumedInstantPlay(io, socket, data));
+
+        // state synchronization (production-ready features)
+        socket.on('req:sync-state-instant-play', (data: any) => stateSyncInstantPlay(io, socket, data));
+        socket.on('req:full-state-instant-play', (data: any) => fullStateInstantPlay(io, socket, data));
 
         // disconnect method
         socket.on('req:leave-namespace-instant-play', (data: any) => leaveNameSpaceInstantPlay(io, socket, data));

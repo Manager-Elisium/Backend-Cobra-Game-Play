@@ -21,6 +21,7 @@ import { leaveNameSpaceFriendPlay } from './friend/leave-namespace';
 import { chatFriendPlay } from './friend/chat-room';
 import { devicePausedFriendPlay } from './friend/device-pause';
 import { deviceResumedFriendPlay } from './friend/device-resume';
+import { stateSyncFriendPlay, fullStateFriendPlay } from './friend/state-sync';
 
 
 export function setupPlayWithFriendNamespace(io: any, namespace: Namespace) {
@@ -59,6 +60,10 @@ export function setupPlayWithFriendNamespace(io: any, namespace: Namespace) {
         // device pause/resume
         socket.on('req:device-paused-play-with-friend', (data: any) => devicePausedFriendPlay(io, socket, data));
         socket.on('req:device-resumed-play-with-friend', (data: any) => deviceResumedFriendPlay(io, socket, data));
+
+        // state synchronization (production-ready features)
+        socket.on('req:sync-state-play-with-friend', (data: any) => stateSyncFriendPlay(io, socket, data));
+        socket.on('req:full-state-play-with-friend', (data: any) => fullStateFriendPlay(io, socket, data));
 
         // disconnect method
         socket.on('req:leave-namespace-instant-play', (data: any) => leaveNameSpaceFriendPlay(io, socket, data));

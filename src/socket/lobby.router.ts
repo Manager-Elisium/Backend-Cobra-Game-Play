@@ -14,6 +14,7 @@ import { showCardLobbyPlay } from './lobby/show-card';
 import { chatLobbyPlay } from './lobby/chat-room';
 import { devicePausedLobbyPlay } from './lobby/device-pause';
 import { deviceResumedLobbyPlay } from './lobby/device-resume';
+import { stateSyncLobbyPlay, fullStateLobbyPlay } from './lobby/state-sync';
 
 
 
@@ -46,6 +47,10 @@ export function setupLobbyNamespace(io: any, namespace: Namespace) {
         // device pause/resume
         socket.on('req:device-paused-lobby-play', (data: any) => devicePausedLobbyPlay(io, socket, data));
         socket.on('req:device-resumed-lobby-play', (data: any) => deviceResumedLobbyPlay(io, socket, data));
+
+        // state synchronization (production-ready features)
+        socket.on('req:sync-state-lobby-play', (data: any) => stateSyncLobbyPlay(io, socket, data));
+        socket.on('req:full-state-lobby-play', (data: any) => fullStateLobbyPlay(io, socket, data));
 
         // disconnect method
         socket.on('req:leave-namespace-lobby-play', (data: any) => leaveNameSpaceLobbyPlay(io, socket, data));

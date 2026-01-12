@@ -35,6 +35,21 @@ export class RoomFriendPlay extends BaseEntity {
     @Column({ nullable: true })
     CURRENT_TURN: string;
 
+    @Column({ type: 'int', default: 0 })
+    TURN_SEQUENCE: number;
+
+    @Column({ nullable: true })
+    GAME_PHASE: string;
+
+    @Column({ type: 'int', default: 30 })
+    TIMER: number;
+
+    @Column({ nullable: true })
+    DISTRIBUTED_CARD_PLAYER: string;
+
+    @Column({ nullable: true })
+    WINNER_USER_ID: string;
+
     @Column({ type: 'jsonb', nullable: true })
     GAME_DECK: any;
 

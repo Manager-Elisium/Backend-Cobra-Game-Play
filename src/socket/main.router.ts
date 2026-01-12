@@ -2,6 +2,7 @@ import { Socket, Namespace } from 'socket.io';
 import { onlineUser } from './main/online';
 import { disconnect } from './main/disconnect';
 import { clubJoint, clubLeave } from './main/club';
+import { pingHandler } from './main/ping';
 
 export function setupMainNamespace(io: any, namespace: Namespace) {
 
@@ -17,6 +18,9 @@ export function setupMainNamespace(io: any, namespace: Namespace) {
 
         // Event handlers specific to this namespace
         socket.on('req:online', (data: any) => onlineUser(socket, data));
+
+        // Ping/Pong for latency measurement
+        socket.on('req:ping', (data: any) => pingHandler(socket, data));
 
         socket.on('req:club-joint', (data: any) => clubJoint(socket, data));
         socket.on('req:club-leave', (data: any) => clubLeave(socket, data));
