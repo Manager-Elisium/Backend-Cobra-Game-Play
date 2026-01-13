@@ -3,6 +3,7 @@ import { verifyAccessToken } from 'src/middleware/auth.token';
 import { RoomFriendPlay } from 'src/domain/friend/room-friend-play.entity';
 import { createDeck, drawCard, shuffleDeck } from 'src/util/deck';
 import { findOne, updateAndReturnById, updateById as updateRoomById } from 'src/repository/room-friend-play.entity';
+import { startTurnTimer } from './turn-timeout';
 
 async function distributedCardFriendPlay(io: any, socket: Socket, data: any) {
     try {
@@ -72,6 +73,12 @@ async function distributedCardFriendPlay(io: any, socket: Socket, data: any) {
                                     TURN_PLAYER: getPlayer.CURRENT_TURN
                                 }
                             });
+                            
+                            // ✅ CRITICAL: Start turn timer for the first player!
+                            if (getPlayer.CURRENT_TURN) {
+                                await startTurnTimer(io, getPlayer.ID, getPlayer.CURRENT_TURN);
+                                console.log(`⏱️ Started turn timer for first player: ${getPlayer.CURRENT_TURN}`);
+                            }
                         }
                     }
                     for (let index = 0; index < viewerUser.length; index++) {

@@ -3,6 +3,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.devicePausedFriendPlay = void 0;
 const auth_token_1 = require("src/middleware/auth.token");
 const room_friend_play_entity_1 = require("src/repository/room-friend-play.entity");
+const turn_timeout_1 = require("./turn-timeout");
 const PAUSE_TIMEOUT_MS = 60 * 1000; // 1 minute in milliseconds
 /**
  * Handle device pause event from Unity client
@@ -23,6 +24,9 @@ async function devicePausedFriendPlay(io, socket, data) {
         const roomId = roomIds[0];
         console.log(`⏸️ Device paused in room: ${roomId}`);
         console.log(`   From Socket ID: ${socket.id}`);
+        // ✅ CRITICAL: Pause the turn timer while game is paused
+        (0, turn_timeout_1.clearTurnTimer)(roomId);
+        console.log(`   ⏱️ Turn timer paused for room: ${roomId}`);
         // Get room clients to verify
         const room = io.of('/play-with-friend').adapter.rooms.get(roomId);
         const roomSize = room ? room.size : 0;

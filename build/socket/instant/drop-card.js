@@ -3,6 +3,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.dropCardInstantPlay = void 0;
 const auth_token_1 = require("src/middleware/auth.token");
 const room_instant_play_entity_1 = require("src/repository/room-instant-play.entity");
+const turn_timeout_1 = require("./turn-timeout");
 async function dropCardInstantPlay(io, socket, data) {
     try {
         console.log(JSON.parse(data));
@@ -21,6 +22,8 @@ async function dropCardInstantPlay(io, socket, data) {
                     socket.emit('res:error-message', { message: 'Instant Play Room is not found.' });
                 }
                 else {
+                    // Update player activity - player is making a move
+                    (0, turn_timeout_1.updatePlayerActivity)(getPlayer.ID, isAuthorized.ID);
                     const { DROP_CARD } = JSON.parse(data);
                     const DB_DROP_DECK = getPlayer?.DROP_DECK;
                     const CURRENT_DROP_DECK = [...DROP_CARD];
@@ -41,6 +44,9 @@ async function dropCardInstantPlay(io, socket, data) {
                         IN_HAND_CARDS: remainingCards
                     } : user);
                     console.log(newArray);
+                    // ⚠️ CRITICAL: Drop card does NOT advance turn - it only throws cards
+                    // Turn will advance when player picks a card (pick-card.ts)
+                    // So we don't update CURRENT_TURN here
                     let updated = await (0, room_instant_play_entity_1.updateAndReturnById)(ID, { CURRENT_DROP_DECK: CURRENT_DROP_DECK, USERS: newArray });
                     io.of('/instant-play').in(ID).emit("res:drop-card-instant-play", {
                         status: true,
@@ -56,6 +62,7 @@ async function dropCardInstantPlay(io, socket, data) {
                             MY_CARD: remainingCards
                         }
                     });
+                    // Note: Turn advances only in pick-card.ts when player completes their action
                 }
             }
         }

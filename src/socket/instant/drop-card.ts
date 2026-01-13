@@ -2,6 +2,7 @@ import { Socket } from 'socket.io';
 import { verifyAccessToken } from 'src/middleware/auth.token';
 import { RoomInstantPlay } from 'src/domain/instant/room-instant-play.entity';
 import { findOne, updateAndReturnById } from 'src/repository/room-instant-play.entity';
+import { updatePlayerActivity } from './turn-timeout';
 
 async function dropCardInstantPlay(io: any, socket: Socket, data: any) {
     try {
@@ -18,6 +19,9 @@ async function dropCardInstantPlay(io: any, socket: Socket, data: any) {
                 if (!getPlayer) {
                     socket.emit('res:error-message', { message: 'Instant Play Room is not found.' });
                 } else {
+                    // Update player activity - player is making a move
+                    updatePlayerActivity(getPlayer.ID, isAuthorized.ID);
+                    
                     const { DROP_CARD } = JSON.parse(data);
                     const DB_DROP_DECK = getPlayer?.DROP_DECK;
                     const CURRENT_DROP_DECK = [...DROP_CARD];
@@ -41,6 +45,10 @@ async function dropCardInstantPlay(io: any, socket: Socket, data: any) {
                     } : user);
                     console.log(newArray)
 
+                    // ⚠️ CRITICAL: Drop card does NOT advance turn - it only throws cards
+                    // Turn will advance when player picks a card (pick-card.ts)
+                    // So we don't update CURRENT_TURN here
+                    
                     let updated = await updateAndReturnById(ID, { CURRENT_DROP_DECK: CURRENT_DROP_DECK, USERS: newArray } as RoomInstantPlay);
                     io.of('/instant-play').in(ID).emit("res:drop-card-instant-play", {
                         status: true,
@@ -56,6 +64,8 @@ async function dropCardInstantPlay(io: any, socket: Socket, data: any) {
                             MY_CARD: remainingCards
                         }
                     });
+                    
+                    // Note: Turn advances only in pick-card.ts when player completes their action
                 }
             }
         }

@@ -3,7 +3,8 @@ import { verifyAccessToken } from 'src/middleware/auth.token';
 import { findOne, updateAndReturnById } from 'src/repository/room-instant-play.entity';
 import { RoomInstantPlay } from 'src/domain/instant/room-instant-play.entity';
 import { instantGameWinner } from 'src/util/game-winner';
-import orderBy from "lodash/orderBy"; 
+import orderBy from "lodash/orderBy";
+import { clearTurnTimer } from './turn-timeout'; 
 
 async function showCardInstantPlay(io: any, socket: Socket, data: any) {
     try {
@@ -19,6 +20,10 @@ async function showCardInstantPlay(io: any, socket: Socket, data: any) {
                 if (!getPlayer) {
                     socket.emit('res:error-message', { message: 'Instant Play Room is not found.' });
                 } else {
+                    // ✅ Clear turn timer - round is ending (player called "Show")
+                    clearTurnTimer(getPlayer.ID);
+                    console.log(`⏱️ Turn timer cleared - Player called Show in room: ${getPlayer.ID}`);
+                    
                     console.log(`getPlayer.USER_WIN_RANK :::: `, getPlayer.USER_WIN_RANK)
                     const getUserPlayRank = [...(getPlayer.USER_WIN_RANK)];
                     

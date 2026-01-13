@@ -7,6 +7,7 @@ exports.showCardFriendPlay = void 0;
 const auth_token_1 = require("src/middleware/auth.token");
 const room_friend_play_entity_1 = require("src/repository/room-friend-play.entity");
 const orderBy_1 = __importDefault(require("lodash/orderBy"));
+const turn_timeout_1 = require("./turn-timeout");
 async function showCardFriendPlay(io, socket, data) {
     try {
         const { Authtoken: token, ROOM_NAME: NAME } = JSON.parse(data);
@@ -24,6 +25,9 @@ async function showCardFriendPlay(io, socket, data) {
                     socket.emit('res:error-message', { message: 'Friend Play Room is not found.' });
                 }
                 else {
+                    // ✅ Clear turn timer - round is ending (player called "Show")
+                    (0, turn_timeout_1.clearTurnTimer)(getPlayer.ID);
+                    console.log(`⏱️ Turn timer cleared - Player called Show in room: ${getPlayer.ID}`);
                     const getUserPlayRank = [...(getPlayer.USER_WIN_RANK)];
                     // In Hand Card
                     const userCard = getPlayer.USERS.map((data) => {

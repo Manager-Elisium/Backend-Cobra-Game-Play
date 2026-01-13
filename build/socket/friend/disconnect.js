@@ -2,14 +2,19 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.disconnectFriendPlay = void 0;
 const room_friend_play_entity_1 = require("src/repository/room-friend-play.entity");
+const turn_timeout_1 = require("./turn-timeout");
 async function disconnectFriendPlay(io, socket) {
     try {
         let getPlayer = await (0, room_friend_play_entity_1.getRoomByConnectionId)({ CONNECTION_ID: socket.id });
         if (!!getPlayer) {
+            console.log(`🔌 Player disconnected from room: ${getPlayer.ID}`);
             // Filter User -- leave room and equal up to 100 
             let isLastPlayer = await getPlayer?.USERS?.filter((data) => (!data.IS_LEAVE_ROOM && data.TOTAL < 100));
             const getUserPlayRank = [...(getPlayer?.USER_WIN_RANK ?? [])];
             if (isLastPlayer.length <= 2) {
+                // Game ending - cleanup timers
+                (0, turn_timeout_1.cleanupRoom)(getPlayer.ID);
+                console.log(`🧹 Room timers cleaned up (game ending): ${getPlayer.ID}`);
                 // Win Player --- Game Over
                 const result = getPlayer.USERS.map((data) => {
                     const sum = data.IN_HAND_CARDS.reduce((accumulator, currentValue) => accumulator + currentValue.rank.value, 0);
@@ -202,6 +207,9 @@ async function disconnectFriendPlay(io, socket) {
                                 }
                             });
                             await (0, room_friend_play_entity_1.updateAndReturnById)(getPlayer?.ID, { USERS: getPlayer.USERS, CURRENT_TURN: nextUserId, USER_WIN_RANK: getUserPlayRank });
+                            // ✅ Start turn timer for next player
+                            await (0, turn_timeout_1.startTurnTimer)(io, getPlayer.ID, nextUserId);
+                            console.log(`⏱️ Turn timer started for next player after disconnect: ${nextUserId}`);
                         }
                         socket.to(getPlayer?.ID).emit('res:win-game-play-with-friend', {
                             status: true,

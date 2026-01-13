@@ -4,6 +4,7 @@ exports.distributedCardInstantPlay = void 0;
 const auth_token_1 = require("src/middleware/auth.token");
 const deck_1 = require("src/util/deck");
 const room_instant_play_entity_1 = require("src/repository/room-instant-play.entity");
+const turn_timeout_1 = require("./turn-timeout");
 async function distributedCardInstantPlay(io, socket, data) {
     try {
         const { Authtoken: token, ROOM_NAME: ID } = JSON.parse(data);
@@ -77,6 +78,11 @@ async function distributedCardInstantPlay(io, socket, data) {
                                     TURN_PLAYER: getPlayer.CURRENT_TURN
                                 }
                             });
+                            // ✅ CRITICAL: Start turn timer for the first player!
+                            if (getPlayer.CURRENT_TURN) {
+                                await (0, turn_timeout_1.startTurnTimer)(io, getPlayer.ID, getPlayer.CURRENT_TURN);
+                                console.log(`⏱️ Started turn timer for first player: ${getPlayer.CURRENT_TURN}`);
+                            }
                         }
                     }
                     for (let index = 0; index < viewerUser.length; index++) {

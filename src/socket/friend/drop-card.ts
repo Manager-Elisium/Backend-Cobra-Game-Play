@@ -2,6 +2,7 @@ import { Socket } from 'socket.io';
 import { verifyAccessToken } from 'src/middleware/auth.token';
 import { RoomFriendPlay } from 'src/domain/friend/room-friend-play.entity';
 import { findOne, updateAndReturnById } from 'src/repository/room-friend-play.entity';
+import { updatePlayerActivity } from './turn-timeout';
 
 async function dropCardFriendPlay(io: any, socket: Socket, data: any) {
     try {
@@ -18,6 +19,9 @@ async function dropCardFriendPlay(io: any, socket: Socket, data: any) {
                 if (!getPlayer) {
                     socket.emit('res:error-message', { message: 'Friend Play Room is not found.' });
                 } else {
+                    // Update player activity - player is making a move
+                    updatePlayerActivity(getPlayer.ID, isAuthorized.ID);
+                    
                     const { DROP_CARD } = JSON.parse(data);
                     const DB_DROP_DECK = getPlayer?.DROP_DECK;
                     const CURRENT_DROP_DECK = [...DROP_CARD];

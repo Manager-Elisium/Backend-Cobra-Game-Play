@@ -3,6 +3,7 @@ import { verifyAccessToken } from 'src/middleware/auth.token';
 import { findOne, updateAndReturnById } from 'src/repository/room-friend-play.entity';
 import { RoomFriendPlay } from 'src/domain/friend/room-friend-play.entity';
 import { drawCard, shuffleDeck } from 'src/util/deck';
+import { clearTurnTimer, startTurnTimer, updatePlayerActivity } from './turn-timeout';
 
 async function pickCardFriendPlay(io: any, socket: Socket, data: any) {
     try {
@@ -19,6 +20,12 @@ async function pickCardFriendPlay(io: any, socket: Socket, data: any) {
                 if (!getPlayer) {
                     socket.emit('res:error-message', { message: 'Friend Play Room is not found.' });
                 } else {
+                    // Clear turn timer - player made an action!
+                    clearTurnTimer(getPlayer.ID);
+                    
+                    // Update player activity
+                    updatePlayerActivity(getPlayer.ID, isAuthorized.ID);
+                    
                     const { IS_NEW_CARD } = JSON.parse(data);
                     // Filter User -- leave room and equal up to 100 
                     const listUser = getPlayer?.USERS.filter((data) => (!data.IS_LEAVE_ROOM && data.TOTAL < 100));
@@ -107,7 +114,10 @@ async function pickCardFriendPlay(io: any, socket: Socket, data: any) {
                         nextTurn_In_FriendPlay: {
                             CURRENT_TURN: nextUserId
                         }
-                    })
+                    });
+                    
+                    // Start turn timer for next player
+                    await startTurnTimer(io, getPlayer.ID, nextUserId);
                 }
             }
         }

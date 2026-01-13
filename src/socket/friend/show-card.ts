@@ -3,6 +3,7 @@ import { verifyAccessToken } from 'src/middleware/auth.token';
 import { findOne, updateAndReturnById } from 'src/repository/room-friend-play.entity';
 import { RoomFriendPlay } from 'src/domain/friend/room-friend-play.entity';
 import orderBy from "lodash/orderBy";
+import { clearTurnTimer } from './turn-timeout';
 
 async function showCardFriendPlay(io: any, socket: Socket, data: any) {
     try {
@@ -18,6 +19,10 @@ async function showCardFriendPlay(io: any, socket: Socket, data: any) {
                 if (!getPlayer) {
                     socket.emit('res:error-message', { message: 'Friend Play Room is not found.' });
                 } else {
+                    // ✅ Clear turn timer - round is ending (player called "Show")
+                    clearTurnTimer(getPlayer.ID);
+                    console.log(`⏱️ Turn timer cleared - Player called Show in room: ${getPlayer.ID}`);
+                    
                     const getUserPlayRank = [...(getPlayer.USER_WIN_RANK)];
                     // In Hand Card
                     const userCard = getPlayer.USERS.map((data) => {

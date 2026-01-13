@@ -3,6 +3,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.dropCardFriendPlay = void 0;
 const auth_token_1 = require("src/middleware/auth.token");
 const room_friend_play_entity_1 = require("src/repository/room-friend-play.entity");
+const turn_timeout_1 = require("./turn-timeout");
 async function dropCardFriendPlay(io, socket, data) {
     try {
         console.log(JSON.parse(data));
@@ -21,6 +22,8 @@ async function dropCardFriendPlay(io, socket, data) {
                     socket.emit('res:error-message', { message: 'Friend Play Room is not found.' });
                 }
                 else {
+                    // Update player activity - player is making a move
+                    (0, turn_timeout_1.updatePlayerActivity)(getPlayer.ID, isAuthorized.ID);
                     const { DROP_CARD } = JSON.parse(data);
                     const DB_DROP_DECK = getPlayer?.DROP_DECK;
                     const CURRENT_DROP_DECK = [...DROP_CARD];

@@ -1,6 +1,8 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.deviceResumedFriendPlay = void 0;
+const room_friend_play_entity_1 = require("src/repository/room-friend-play.entity");
+const turn_timeout_1 = require("./turn-timeout");
 /**
  * Handle device resume event from Unity client
  * Broadcasts resume to all other clients in the same room
@@ -25,6 +27,20 @@ async function deviceResumedFriendPlay(io, socket, data) {
         const roomId = roomIds[0];
         console.log(`▶️ Device resumed in room: ${roomId}`);
         console.log(`   From Socket ID: ${socket.id}`);
+        // ✅ CRITICAL: Restart the turn timer when game resumes
+        try {
+            const getPlayer = await (0, room_friend_play_entity_1.findOne)({ ID: roomId });
+            if (getPlayer && getPlayer.CURRENT_TURN) {
+                await (0, turn_timeout_1.startTurnTimer)(io, roomId, getPlayer.CURRENT_TURN);
+                console.log(`   ⏱️ Turn timer restarted for player: ${getPlayer.CURRENT_TURN}`);
+            }
+            else {
+                console.log(`   ⚠️ Could not restart turn timer - room or current turn not found`);
+            }
+        }
+        catch (error) {
+            console.error(`   ❌ Error restarting turn timer:`, error);
+        }
         // Get room clients to verify
         const room = io.of('/play-with-friend').adapter.rooms.get(roomId);
         const roomSize = room ? room.size : 0;

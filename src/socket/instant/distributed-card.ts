@@ -3,6 +3,7 @@ import { verifyAccessToken } from 'src/middleware/auth.token';
 import { RoomInstantPlay } from 'src/domain/instant/room-instant-play.entity';
 import { createDeck, drawCard, shuffleDeck } from 'src/util/deck';
 import { findOne, updateAndReturnById } from 'src/repository/room-instant-play.entity';
+import { startTurnTimer } from './turn-timeout';
 
 async function distributedCardInstantPlay(io: any, socket: Socket, data: any) {
     try {
@@ -75,6 +76,12 @@ async function distributedCardInstantPlay(io: any, socket: Socket, data: any) {
                                     TURN_PLAYER: getPlayer.CURRENT_TURN
                                 }
                             });
+                            
+                            // ✅ CRITICAL: Start turn timer for the first player!
+                            if (getPlayer.CURRENT_TURN) {
+                                await startTurnTimer(io, getPlayer.ID, getPlayer.CURRENT_TURN);
+                                console.log(`⏱️ Started turn timer for first player: ${getPlayer.CURRENT_TURN}`);
+                            }
                         }
                     }
                     for (let index = 0; index < viewerUser.length; index++) {

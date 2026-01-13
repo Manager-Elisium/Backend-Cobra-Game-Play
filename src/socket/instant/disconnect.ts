@@ -4,6 +4,7 @@ import { getRoomByConnectionId, updateAndReturnById } from 'src/repository/room-
 import { deletedDisconnet } from 'src/repository/temp-instant-play.entity';
 import { instantGameWinner } from 'src/util/game-winner';
 import { addCoin } from 'src/util/reward.service';
+import { cleanupRoom, startTurnTimer } from './turn-timeout';
 
 
 async function disconnectInstantPlay(io: any, socket: Socket) {
@@ -14,14 +15,19 @@ async function disconnectInstantPlay(io: any, socket: Socket) {
         }
 
         let getPlayer = await getRoomByConnectionId({ CONNECTION_ID: socket.id });
-        console.log(`Disconnect getPlayer :::: `, getPlayer)
+        console.log(`🔌 Player disconnected - getPlayer :::: `, getPlayer)
         if (!!getPlayer) {
+            console.log(`🔌 Player disconnected from room: ${getPlayer.ID}`);
+            
             // Filter User -- leave room and equal up to 100 
             let isLastPlayer = await getPlayer?.USERS?.filter((data) => (!data.IS_LEAVE_ROOM && data.TOTAL < 100));
             console.log(`isLastPlayer :::: `, isLastPlayer)
             const getUserPlayRank = [...(getPlayer?.USER_WIN_RANK ?? [])];
             console.log(`isLastPlayer :::: `, isLastPlayer)
             if (isLastPlayer?.length <= 2) {
+                // Game ending - cleanup timers
+                cleanupRoom(getPlayer.ID);
+                console.log(`🧹 Room timers cleaned up (game ending): ${getPlayer.ID}`);
                 // Win Player --- Game Over
                 const result = getPlayer?.USERS?.map((data) => {
                     const sum = data.IN_HAND_CARDS.reduce((accumulator, currentValue) => accumulator + currentValue.rank.value, 0);
@@ -231,6 +237,10 @@ async function disconnectInstantPlay(io: any, socket: Socket) {
                                 }
                             });
                             await updateAndReturnById(getPlayer?.ID, { USERS: getPlayer.USERS, CURRENT_TURN: nextUserId, USER_WIN_RANK: getUserPlayRank } as RoomInstantPlay);
+                            
+                            // ✅ Start turn timer for next player
+                            await startTurnTimer(io, getPlayer.ID, nextUserId);
+                            console.log(`⏱️ Turn timer started for next player after disconnect: ${nextUserId}`);
                         }
 
                         socket.to(getPlayer?.ID).emit('res:leave-room-instant-play', {

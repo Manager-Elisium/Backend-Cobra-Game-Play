@@ -1,16 +1,22 @@
 import { Socket } from 'socket.io';
 import { RoomFriendPlay } from 'src/domain/friend/room-friend-play.entity';
 import { getRoomByConnectionId, updateAndReturnById } from 'src/repository/room-friend-play.entity';
+import { cleanupRoom, startTurnTimer } from './turn-timeout';
 
 
 async function disconnectFriendPlay(io: any, socket: Socket) {
     try {
         let getPlayer = await getRoomByConnectionId({ CONNECTION_ID: socket.id });
         if (!!getPlayer) {
+            console.log(`🔌 Player disconnected from room: ${getPlayer.ID}`);
+            
             // Filter User -- leave room and equal up to 100 
             let isLastPlayer = await getPlayer?.USERS?.filter((data) => (!data.IS_LEAVE_ROOM && data.TOTAL < 100));
             const getUserPlayRank = [...(getPlayer?.USER_WIN_RANK ?? [])];
             if (isLastPlayer.length <= 2) {
+                // Game ending - cleanup timers
+                cleanupRoom(getPlayer.ID);
+                console.log(`🧹 Room timers cleaned up (game ending): ${getPlayer.ID}`);
                 // Win Player --- Game Over
                 const result = getPlayer.USERS.map((data) => {
                     const sum = data.IN_HAND_CARDS.reduce((accumulator, currentValue) => accumulator + currentValue.rank.value, 0);
@@ -218,6 +224,10 @@ async function disconnectFriendPlay(io: any, socket: Socket) {
                                 }
                             });
                             await updateAndReturnById(getPlayer?.ID, { USERS: getPlayer.USERS, CURRENT_TURN: nextUserId, USER_WIN_RANK: getUserPlayRank } as RoomFriendPlay);
+                            
+                            // ✅ Start turn timer for next player
+                            await startTurnTimer(io, getPlayer.ID, nextUserId);
+                            console.log(`⏱️ Turn timer started for next player after disconnect: ${nextUserId}`);
                         }
 
                         socket.to(getPlayer?.ID).emit('res:win-game-play-with-friend', {

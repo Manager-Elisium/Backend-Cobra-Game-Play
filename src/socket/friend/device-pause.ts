@@ -2,6 +2,7 @@ import { Socket } from 'socket.io';
 import { verifyAccessToken } from "src/middleware/auth.token";
 import { RoomFriendPlay } from 'src/domain/friend/room-friend-play.entity';
 import { findOne, updateById as updateRoomById, updateAndReturnById } from 'src/repository/room-friend-play.entity';
+import { clearTurnTimer } from './turn-timeout';
 
 const PAUSE_TIMEOUT_MS = 60 * 1000; // 1 minute in milliseconds
 
@@ -27,6 +28,10 @@ async function devicePausedFriendPlay(io: any, socket: Socket, data: any) {
         
         console.log(`⏸️ Device paused in room: ${roomId}`);
         console.log(`   From Socket ID: ${socket.id}`);
+        
+        // ✅ CRITICAL: Pause the turn timer while game is paused
+        clearTurnTimer(roomId);
+        console.log(`   ⏱️ Turn timer paused for room: ${roomId}`);
         
         // Get room clients to verify
         const room = io.of('/play-with-friend').adapter.rooms.get(roomId);

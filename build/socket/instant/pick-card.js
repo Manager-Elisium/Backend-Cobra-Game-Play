@@ -4,6 +4,7 @@ exports.pickCardInstantPlay = void 0;
 const auth_token_1 = require("src/middleware/auth.token");
 const room_instant_play_entity_1 = require("src/repository/room-instant-play.entity");
 const deck_1 = require("src/util/deck");
+const turn_timeout_1 = require("./turn-timeout");
 async function pickCardInstantPlay(io, socket, data) {
     try {
         console.log(JSON.parse(data));
@@ -22,6 +23,10 @@ async function pickCardInstantPlay(io, socket, data) {
                     socket.emit('res:error-message', { message: 'Instant Play Room is not found.' });
                 }
                 else {
+                    // Clear turn timer - player made an action!
+                    (0, turn_timeout_1.clearTurnTimer)(getPlayer.ID);
+                    // Update player activity
+                    (0, turn_timeout_1.updatePlayerActivity)(getPlayer.ID, isAuthorized.ID);
                     const { IS_NEW_CARD } = JSON.parse(data);
                     // Filter User -- leave room and equal up to 100 
                     const listUser = getPlayer.USERS.filter((data) => (!data.IS_LEAVE_ROOM && data.TOTAL < 100));
@@ -108,6 +113,8 @@ async function pickCardInstantPlay(io, socket, data) {
                             CURRENT_TURN: nextUserId
                         }
                     });
+                    // Start turn timer for next player
+                    await (0, turn_timeout_1.startTurnTimer)(io, getPlayer.ID, nextUserId);
                 }
             }
         }
