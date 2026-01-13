@@ -328,12 +328,22 @@ async function devicePausedFriendPlay(io: any, socket: Socket, data: any) {
             }
         }, PAUSE_TIMEOUT_MS);
         
+        // Get the pausing player's ID
+        let pausingPlayerId = null;
+        if (token) {
+            const isAuthorized = await verifyAccessToken(token) as any;
+            if (isAuthorized) {
+                pausingPlayerId = isAuthorized.ID;
+            }
+        }
+        
         // Broadcast pause to all other clients in the room (excluding the sender)
         socket.to(roomId).emit('res:game-paused-play-with-friend', {
             status: true,
             message: 'Game paused by another device',
             gamePaused_In_FriendPlay: {
-                ROOM_ID: roomId
+                ROOM_ID: roomId,
+                PAUSED_BY_USER_ID: pausingPlayerId // Send who paused
             }
         });
         
