@@ -13,8 +13,9 @@ const activeTurnTimers: Map<string, NodeJS.Timeout> = new Map();
 // Store player activity: roomId -> { playerId -> lastActivityTimestamp }
 const playerActivity: Map<string, Map<string, number>> = new Map();
 
-const TURN_TIMEOUT_MS = 45000; // 45 seconds
-const WARNING_TIMEOUT_MS = 30000; // 30 seconds - send warning
+// INCREASED FOR SLOW NETWORKS - 2G/3G support
+const TURN_TIMEOUT_MS = 120000; // 120 seconds (2 minutes) - allows slow networks
+const WARNING_TIMEOUT_MS = 90000; // 90 seconds - send warning
 
 /**
  * Start turn timer for a room
