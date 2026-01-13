@@ -1,4 +1,5 @@
 import { Socket } from 'socket.io';
+import { verifyAccessToken } from "src/middleware/auth.token";
 import { findOne } from 'src/repository/room-friend-play.entity';
 import { startTurnTimer } from './turn-timeout';
 
@@ -49,12 +50,32 @@ async function deviceResumedFriendPlay(io: any, socket: Socket, data: any) {
         const roomSize = room ? room.size : 0;
         console.log(`   Room ${roomId} has ${roomSize} client(s)`);
         
+        // Parse data to get auth token
+        let parsedData: any = {};
+        try {
+            parsedData = JSON.parse(data);
+        } catch (e) {
+            parsedData = data;
+        }
+        
+        const { Authtoken: token } = parsedData;
+        
+        // Get the resuming player's ID
+        let resumingPlayerId = null;
+        if (token) {
+            const isAuthorized = await verifyAccessToken(token) as any;
+            if (isAuthorized) {
+                resumingPlayerId = isAuthorized.ID;
+            }
+        }
+        
         // Broadcast resume to all other clients in the room (excluding the sender)
         socket.to(roomId).emit('res:game-resumed-play-with-friend', {
             status: true,
             message: 'Game resumed by another device',
             gameResumed_In_FriendPlay: {
-                ROOM_ID: roomId
+                ROOM_ID: roomId,
+                RESUMED_BY_USER_ID: resumingPlayerId // Send who resumed
             }
         });
         
