@@ -3,7 +3,8 @@ import { FindOptionsWhere, In } from "typeorm";
 
 
 async function create(data: any) {
-    return UserRecord.save(data);
+    const record = UserRecord.create(data);
+    return record.save();
 }
 
 async function getOne(data: FindOptionsWhere<UserRecord>) {
