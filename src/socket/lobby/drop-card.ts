@@ -2,6 +2,7 @@ import { Socket } from 'socket.io';
 import { verifyAccessToken } from 'src/middleware/auth.token';
 import { RoomLobbyPlay } from 'src/domain/lobby/room-lobby-play.entity';
 import { findOne, updateAndReturnById } from 'src/repository/room-lobby-play.entity';
+import { clearTurnTimer, updatePlayerActivity } from './turn-timeout';
 
 async function dropCardLobbyPlay(io: any, socket: Socket, data: any) {
     try {
@@ -42,6 +43,11 @@ async function dropCardLobbyPlay(io: any, socket: Socket, data: any) {
                     console.log(newArray)
 
                     let updated = await updateAndReturnById(ID, { CURRENT_DROP_DECK: CURRENT_DROP_DECK, USERS: newArray } as RoomLobbyPlay);
+                    
+                    // Clear timer and update activity when player drops card
+                    clearTurnTimer(ID);
+                    updatePlayerActivity(ID, isAuthorized.ID);
+                    
                     io.of('/lobby-play').in(ID).emit("res:drop-card-lobby-play", {
                         status: true,
                         dropCard_In_LobbyPlay: {

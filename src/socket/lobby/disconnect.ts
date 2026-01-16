@@ -4,6 +4,7 @@ import { getRoomByConnectionId, updateAndReturnById } from 'src/repository/room-
 import { deletedDisconnet } from 'src/repository/temp-lobby-play.entity';
 import { lobbyGameWinner } from 'src/util/game-winner';
 import { addCoin } from 'src/util/reward.service';
+import { startTurnTimer, cleanupRoom } from './turn-timeout';
 
 
 async function disconnectLobbyPlay(io: any, socket: Socket) {
@@ -144,6 +145,10 @@ async function disconnectLobbyPlay(io: any, socket: Socket) {
                     WIN_USER: winnerId,
                     USER_WIN_RANK: getUserPlayRank
                 } as RoomLobbyPlay);
+                
+                // Game finished - cleanup timer
+                cleanupRoom(getPlayer?.ID);
+                
                 const input = typeof updated?.raw[0]?.ROUND_INFO === 'string' ? JSON.parse(updated?.raw[0]?.ROUND_INFO) : updated?.raw[0]?.ROUND_INFO;
                 console.log(`Input :::: ${JSON.stringify(input)}`)
                 const getLastRoundScores = {}; // Store the last round scores and ranks for each user
@@ -233,6 +238,9 @@ async function disconnectLobbyPlay(io: any, socket: Socket) {
                                 }
                             });
                             await updateAndReturnById(getPlayer?.ID, { USERS: getPlayer.USERS, CURRENT_TURN: nextUserId, USER_WIN_RANK: getUserPlayRank } as RoomLobbyPlay);
+                            
+                            // Start timer for next player if game is still active
+                            await startTurnTimer(io, getPlayer?.ID, nextUserId);
                         }
 
                         socket.to(getPlayer?.ID).emit('res:leave-room-lobby-play', {

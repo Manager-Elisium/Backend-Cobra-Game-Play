@@ -3,6 +3,7 @@ import { verifyAccessToken } from 'src/middleware/auth.token';
 import { RoomLobbyPlay } from 'src/domain/lobby/room-lobby-play.entity';
 import { createDeck, drawCard, shuffleDeck } from 'src/util/deck';
 import { findOne, updateAndReturnById } from 'src/repository/room-lobby-play.entity';
+import { startTurnTimer } from './turn-timeout';
 
 async function distributedCardLobbyPlay(io: any, socket: Socket, data: any) {
     try {
@@ -65,6 +66,9 @@ async function distributedCardLobbyPlay(io: any, socket: Socket, data: any) {
                         console.log(listUser.length)
                         if (listUser.length === index + 1) {
                             /// Round Win Player Send
+                            // Start turn timer for the first player
+                            await startTurnTimer(io, ID, getPlayer.CURRENT_TURN);
+                            
                             io.of('/lobby-play').in(ID).emit("res:game-start-lobby-play", {
                                 status: true,
                                 message: "Game Start.",

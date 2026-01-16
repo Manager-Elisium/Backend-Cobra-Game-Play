@@ -7,6 +7,7 @@ import {
 import axios from "axios";
 import { clubGameWinner } from "src/util/game-winner";
 import orderBy from "lodash/orderBy";
+import { clearTurnTimer, updatePlayerActivity, startTurnTimer, cleanupRoom } from './turn-timeout';
 const url = "http://43.204.102.183:3005";
 
 async function showCardClubPlay(io: any, socket: Socket, data: any) {
@@ -28,7 +29,11 @@ async function showCardClubPlay(io: any, socket: Socket, data: any) {
           socket.emit("res:error-message", {
             message: "Club Play Room is not found.",
           });
-        } else {
+          } else {
+          // Clear timer and update activity when player shows card
+          clearTurnTimer(ID);
+          updatePlayerActivity(ID, isAuthorized.ID);
+          
           const getUserPlayRank = [...getPlayer.USER_WIN_RANK];
           // In Hand Card
           const userCard = getPlayer.USERS.map((data) => {
@@ -203,6 +208,9 @@ async function showCardClubPlay(io: any, socket: Socket, data: any) {
 
           console.log(`PARTICIPATED_USERS :  ${JSON.stringify(infoRound)}`);
           if (isNextRound) {
+            // Start timer for next round's first player
+            await startTurnTimer(io, ID, minTotalObj.USER_ID);
+            
             let updated = await updateAndReturnById(ID, {
               TURN_DECIDE_DECK: [],
               GAME_DECK: [],
@@ -239,6 +247,9 @@ async function showCardClubPlay(io: any, socket: Socket, data: any) {
                 },
               });
           } else {
+            // Game finished - cleanup timer
+            cleanupRoom(ID);
+            
             if (!getUserPlayRank.includes(minTotalObj?.USER_ID)) {
               getUserPlayRank.unshift(minTotalObj?.USER_ID);
             }

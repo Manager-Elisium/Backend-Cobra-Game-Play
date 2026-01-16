@@ -3,7 +3,8 @@ import { verifyAccessToken } from 'src/middleware/auth.token';
 import { findOne, updateAndReturnById } from 'src/repository/room-lobby-play.entity';
 import { RoomLobbyPlay } from 'src/domain/lobby/room-lobby-play.entity';
 import { lobbyGameWinner } from 'src/util/game-winner';
-import orderBy from "lodash/orderBy"; 
+import orderBy from "lodash/orderBy";
+import { clearTurnTimer, updatePlayerActivity, startTurnTimer, cleanupRoom } from './turn-timeout'; 
 
 async function showCardLobbyPlay(io: any, socket: Socket, data: any) {
     try {
@@ -19,6 +20,10 @@ async function showCardLobbyPlay(io: any, socket: Socket, data: any) {
                 if (!getPlayer) {
                     socket.emit('res:error-message', { message: 'Lobby Play Room is not found.' });
                 } else {
+                    // Clear timer and update activity when player shows card
+                    clearTurnTimer(ID);
+                    updatePlayerActivity(ID, isAuthorized.ID);
+                    
                     const getUserPlayRank = [...(getPlayer.USER_WIN_RANK)];
                     // In Hand Card
                     const userCard = getPlayer.USERS.map((data) => {
@@ -175,6 +180,9 @@ async function showCardLobbyPlay(io: any, socket: Socket, data: any) {
 
                     console.log(`PARTICIPATED_USERS :  ${JSON.stringify(infoRound)}`);
                     if (isNextRound) {
+                        // Start timer for next round's first player
+                        await startTurnTimer(io, ID, minTotalObj.USER_ID);
+                        
                         let updated = await updateAndReturnById(ID, {
                             TURN_DECIDE_DECK: [],
                             GAME_DECK: [],
@@ -204,6 +212,9 @@ async function showCardLobbyPlay(io: any, socket: Socket, data: any) {
                             }
                         })
                     } else {
+                        // Game finished - cleanup timer
+                        cleanupRoom(ID);
+                        
                         if (!getUserPlayRank.includes(minTotalObj?.USER_ID)) {
                             getUserPlayRank.unshift(minTotalObj?.USER_ID);
                         }

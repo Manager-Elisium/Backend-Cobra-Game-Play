@@ -3,6 +3,7 @@ import { verifyAccessToken } from 'src/middleware/auth.token';
 import { RoomLobbyPlay } from 'src/domain/lobby/room-lobby-play.entity';
 import { cardToString, findHighestCard } from 'src/util/deck';
 import { findOne, updateAndReturnById } from 'src/repository/room-lobby-play.entity';
+import { startTurnTimer } from './turn-timeout';
 
 async function decidedFirstRoundTurnLobbyPlay(io: any, socket: Socket, data: any) {
     try {
@@ -37,12 +38,17 @@ async function decidedFirstRoundTurnLobbyPlay(io: any, socket: Socket, data: any
                             IS_PENALTY_SCORE: false,
                             PENALTY_COUNT: data?.PENALTY_COUNT
                         }));
-                        await updateAndReturnById(ID, { TURN_DECIDE_DECK: null, USERS: upDateRoom.USERS, CURRENT_TURN: getPlayer?.USERS[firstTurnPlayer]?.USER_ID } as RoomLobbyPlay);
+                        const firstTurnPlayerId = getPlayer?.USERS[firstTurnPlayer]?.USER_ID;
+                        await updateAndReturnById(ID, { TURN_DECIDE_DECK: null, USERS: upDateRoom.USERS, CURRENT_TURN: firstTurnPlayerId } as RoomLobbyPlay);
+                        
+                        // Start turn timer for the first player
+                        await startTurnTimer(io, ID, firstTurnPlayerId);
+                        
                         io.of('/lobby-play').in(ID).emit("res:decided-first-round-turn-lobby-play", {
                             status: true,
                             firstTurn_In_LobbyPlay: {
                                 DISTRIBUTED_CARD_PLAYER: highestCard?.highestPlayerIndex,
-                                FIRST_TURN_PLAYER: getPlayer?.USERS[firstTurnPlayer]?.USER_ID,
+                                FIRST_TURN_PLAYER: firstTurnPlayerId,
                                 ALL_PLAYER_CARD: getPlayer?.USERS
                             }
                         });

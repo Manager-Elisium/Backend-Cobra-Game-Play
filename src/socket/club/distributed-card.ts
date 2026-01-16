@@ -2,6 +2,7 @@ import { Socket } from 'socket.io';
 import { createDeck, drawCard, shuffleDeck } from 'src/util/deck';
 import { findOne, updateAndReturnById } from 'src/repository/room-club-play.entity';
 import { verifyAccessToken } from 'src/middleware/auth.token';
+import { startTurnTimer } from './turn-timeout';
 
 
 async function distributedCardTablePlay(io: any, socket: Socket, data: any) {
@@ -67,6 +68,9 @@ async function distributedCardTablePlay(io: any, socket: Socket, data: any) {
                         console.log(listUser.length)
                         if (listUser.length === index + 1) {
                             /// Round Win Player Send
+                            // Start turn timer for the first player
+                            await startTurnTimer(io, ID, getPlayer.CURRENT_TURN);
+                            
                             io.of('/club-play').in(ID).emit("res:game-start-table-play", {
                                 status: true,
                                 message: "Game Start.",

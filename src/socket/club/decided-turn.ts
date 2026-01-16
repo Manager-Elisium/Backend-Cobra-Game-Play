@@ -2,6 +2,7 @@ import { Socket } from 'socket.io';
 import { cardToString, findHighestCard } from 'src/util/deck';
 import { findOne, updateAndReturnById } from 'src/repository/room-club-play.entity';
 import { verifyAccessToken } from 'src/middleware/auth.token';
+import { startTurnTimer } from './turn-timeout';
 
 
 async function decidedFirstRoundTurnTablePlay(io: any, socket: Socket, data: any) {
@@ -38,12 +39,17 @@ async function decidedFirstRoundTurnTablePlay(io: any, socket: Socket, data: any
                             IS_PENALTY_SCORE: false,
                             PENALTY_COUNT: data?.PENALTY_COUNT
                         }));
-                        await updateAndReturnById(ID, { TURN_DECIDE_DECK: null, USERS: upDateRoom.USERS, CURRENT_TURN: getPlayer?.USERS[firstTurnPlayer]?.USER_ID });
+                        const firstTurnPlayerId = getPlayer?.USERS[firstTurnPlayer]?.USER_ID;
+                        await updateAndReturnById(ID, { TURN_DECIDE_DECK: null, USERS: upDateRoom.USERS, CURRENT_TURN: firstTurnPlayerId });
+                        
+                        // Start turn timer for the first player
+                        await startTurnTimer(io, ID, firstTurnPlayerId);
+                        
                         io.of('/club-play').in(ID).emit("res:decided-first-round-turn-table-play", {
                             status: true,
                             firstTurn_In_TablePlay: {
                                 DISTRIBUTED_CARD_PLAYER: highestCard?.highestPlayerIndex,
-                                FIRST_TURN_PLAYER: getPlayer?.USERS[firstTurnPlayer]?.USER_ID,
+                                FIRST_TURN_PLAYER: firstTurnPlayerId,
                                 ALL_PLAYER_CARD: getPlayer?.USERS
                             }
                         });

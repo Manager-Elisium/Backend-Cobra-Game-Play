@@ -3,6 +3,7 @@ import { verifyAccessToken } from 'src/middleware/auth.token';
 import { findOne, updateAndReturnById } from 'src/repository/room-lobby-play.entity';
 import { RoomLobbyPlay } from 'src/domain/lobby/room-lobby-play.entity';
 import { drawCard, shuffleDeck } from 'src/util/deck';
+import { clearTurnTimer, updatePlayerActivity, startTurnTimer } from './turn-timeout';
 
 async function pickCardLobbyPlay(io: any, socket: Socket, data: any) {
     try {
@@ -102,6 +103,11 @@ async function pickCardLobbyPlay(io: any, socket: Socket, data: any) {
                             }
                         });
                     }
+                    // Clear timer for current player and start timer for next player
+                    clearTurnTimer(ID);
+                    updatePlayerActivity(ID, isAuthorized.ID);
+                    await startTurnTimer(io, ID, nextUserId);
+
                     io.of('/lobby-play').in(ID).emit('res:next-turn-lobby-play', {
                         status: true,
                         nextTurn_In_LobbyPlay: {
