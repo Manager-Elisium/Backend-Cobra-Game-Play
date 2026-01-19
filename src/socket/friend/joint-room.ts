@@ -52,12 +52,13 @@ async function jointRoom(io: any, socket: Socket, data: any) {
           );
           console.log(`USER :::: `, USER);
           console.log(`jointPlayer :::: `, jointPlayer);
-          if (jointPlayer?.length >= 4) {
+          // MODIFIED: 2 players only (1 owner + 1 joined = max 1 joined player)
+          if (jointPlayer?.length >= 1) {
             // send request
             socket.emit("res:joint-room-play-with-friend", {
               status: false,
               message:
-                "Room is already full, Please create new room for new game.",
+                "Room is full (2 players max). Please create a new room.",
             });
           } else {
             const currentUser = [...getPlayer.USERS];

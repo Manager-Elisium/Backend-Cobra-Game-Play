@@ -18,6 +18,18 @@ async function acceptDeclineRoomByOwner(io: any, socket: Socket, data: any) {
                     socket.emit('res:error-message', { message: 'Friend Play Room is not found.' });
                 } else {
                     if (IS_ACCEPT) {
+                        // MODIFIED: 2 players only - Check if room is already full before accepting
+                        const jointPlayer = getPlayer.USERS.filter(
+                            (data) => data.IS_JOINT_ROOM === true
+                        );
+                        if (jointPlayer?.length >= 1) {
+                            socket.emit('res:accept-decline-in-room-play-with-friend', {
+                                status: false,
+                                message: "Room is already full (2 players max). Cannot accept more players."
+                            });
+                            return;
+                        }
+                        
                         console.log(`Data :::: `, JSON.parse(data))
                         const USER = getPlayer?.USERS?.map(user => user?.USER_ID === USER_ID ? {
                             ...user,
