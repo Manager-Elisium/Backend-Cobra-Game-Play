@@ -45,7 +45,7 @@ async function acceptDeclineRoomByOwner(io: any, socket: Socket, data: any) {
                                 message: "Successfully joint room request.",
                                 acceptRequest_RoomJoint_In_FriendPlay: {
                                     USER_ID: isAuthorized.ID,
-                                    USERS: USER?.filter(user => user.IS_JOINT_ROOM === true),
+                                    USERS: USER, // FIXED: Send ALL users (owner + joining player), not just IS_JOINT_ROOM
                                     IS_ACCEPT,
                                     ROOM_NAME: NAME,
                                     ROOM_ID: getPlayer?.ID
@@ -57,7 +57,7 @@ async function acceptDeclineRoomByOwner(io: any, socket: Socket, data: any) {
                             message: "Successfully joint room request.",
                             receiveRequest_RoomJoint_In_FriendPlay: {
                                 USER_ID: isAuthorized?.ID,
-                                USERS: USER?.filter(user => user.IS_JOINT_ROOM === true),
+                                USERS: USER, // FIXED: Send ALL users (owner + joining player), not just IS_JOINT_ROOM
                                 IS_ACCEPT,
                                 ROOM_NAME: NAME,
                                 ROOM_ID: getPlayer?.ID
