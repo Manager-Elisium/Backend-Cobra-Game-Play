@@ -35,11 +35,30 @@ jobs:
 
     - name: Copy files to EC2
       run: |
+        set -e  # Exit on any error
+        
+        # Verify build folder exists
+        if [ ! -d "build" ]; then
+          echo "Error: build/ directory not found! Build may have failed."
+          exit 1
+        fi
+        
         FILES="build/ package.json package-lock.json"
         [ -f .env ] && FILES="$FILES .env"
         [ -f .env.production ] && FILES="$FILES .env.production"
+        
         tar -czf deploy.tar.gz $FILES
-        scp -i ~/.ssh/ec2_key.pem deploy.tar.gz ec2-user@${{ secrets.EC2_GAMEPLAY_HOST }}:~/app/
+        
+        # Verify tar was created
+        if [ ! -f "deploy.tar.gz" ]; then
+          echo "Error: deploy.tar.gz was not created!"
+          exit 1
+        fi
+        
+        # Copy to EC2 with verbose output
+        scp -v -i ~/.ssh/ec2_key.pem deploy.tar.gz ec2-user@${{ secrets.EC2_GAMEPLAY_HOST }}:~/app/
+        
+        echo "✓ Deploy package copied successfully"
 
     - name: Deploy on EC2
       run: |
