@@ -18,7 +18,7 @@ async function createRoom(io: any, socket: Socket, data: any) {
                 const USERS = [{
                     CONNECTION_ID: socket.id,
                     USER_ID: isAuthorized.ID,
-                    IS_JOINT_ROOM: true,
+                    IS_JOINT_ROOM: false, // FIXED: Owner doesn't "join", they create the room
                     IS_LEAVE_ROOM: false,
                     IS_ROOM_OWNER: true,
                     TOTAL: 0,
