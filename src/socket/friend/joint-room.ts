@@ -42,27 +42,28 @@ async function jointRoom(io: any, socket: Socket, data: any) {
             PENALTY_COUNT: 0,
             WIN_COIN: getOne?.WIN_COIN ?? 0,
           };
-          // ToDo
-          const USER = [...getPlayer.USERS, currentUser];
-          const ownerPlayer = USER.filter(
-            (data) => data.IS_ROOM_OWNER === true
-          );
-          const jointPlayer = USER.filter(
+          // MODIFIED: 2 players only - Check EXISTING players before adding new one
+          const jointPlayer = getPlayer.USERS.filter(
             (data) => data.IS_JOINT_ROOM === true
           );
-          console.log(`USER :::: `, USER);
-          console.log(`jointPlayer :::: `, jointPlayer);
-          // MODIFIED: 2 players only (1 owner + 1 joined = max 1 joined player)
+          console.log(`Existing jointPlayer :::: `, jointPlayer);
+          
           if (jointPlayer?.length >= 1) {
-            // send request
+            // Room already has 1 accepted player (+ owner = 2 total), reject new join
             socket.emit("res:joint-room-play-with-friend", {
               status: false,
               message:
                 "Room is full (2 players max). Please create a new room.",
             });
           } else {
-            const currentUser = [...getPlayer.USERS];
-            const userSendRequestList = currentUser.map((data) => data.USER_ID);
+            // Room has space, allow join request
+            const USER = [...getPlayer.USERS, currentUser];
+            const ownerPlayer = USER.filter(
+              (data) => data.IS_ROOM_OWNER === true
+            );
+            console.log(`USER :::: `, USER);
+            const existingUsers = [...getPlayer.USERS];
+            const userSendRequestList = existingUsers.map((data) => data.USER_ID);
             if (userSendRequestList.includes(isAuthorized.ID)) {
               // send request
               socket.emit("res:joint-room-play-with-friend", {
