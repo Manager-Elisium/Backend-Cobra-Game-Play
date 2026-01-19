@@ -70,9 +70,9 @@ async function startTimerInstantPlay(io: any, socket: Socket, data: any) {
                             }
                         }, 18 * 1000); // 15                  
                     } else {
-                        const [list, count] = await findUser({ USER_ID: isAuthorized.ID });
-                        if (count === 3) {
-                            // Request Player
+                    const [list, count] = await findUser({ USER_ID: isAuthorized.ID });
+                    if (count === 1) { // Changed from 3 to 1 for 2-player only
+                        // Request Player
                             const findCurrentPlayerQuery = {
                                 where: {
                                     USER_ID: isAuthorized.ID, 
@@ -225,7 +225,7 @@ async function playerInstantForLevel(currentPlayer: any) {
         let getPlayer: LobbyInstantPlay = await findOneLobby(findCurrentPlayerQuery) as LobbyInstantPlay;
         if(!!getPlayer) { 
             const [list, count] = await findUser({ USER_ID: USER_ID });
-            if (count === 2 || count === 1) {
+            if (count === 1) { // Changed to only match with 1 other player for 2-player game
                 const deleteWaitRoom = await multipleDeleted([...list, currentPlayer].map((data: any) => (
                     data.USER_ID
                 )));

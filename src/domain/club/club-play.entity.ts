@@ -18,7 +18,7 @@ export class ClubPlay extends BaseEntity {
     @Column({ name: 'CLUB_ID' })
     CLUB_ID: string;
 
-    @Column()
+    @Column({ default: 2 })
     NO_OF_PLAYER: number;
 
     @Column()

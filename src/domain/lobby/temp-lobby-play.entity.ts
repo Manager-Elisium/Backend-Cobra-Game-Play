@@ -11,7 +11,7 @@ export class TempLobbyPlay extends BaseEntity {
   @Column()
   USER_ID: string;
 
-  @Column()
+  @Column({ default: 2 })
   NO_OF_PLAYER: number;
 
   @Column()

@@ -14,7 +14,7 @@ export class RoomLobbyPlay extends BaseEntity {
   @Column({ default: 0 })
   CURRENT_ROUND_NUMBER: number;
 
-  @Column()
+  @Column({ default: 2 })
   NO_OF_PLAYER: number;
 
   @Column()

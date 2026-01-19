@@ -39,8 +39,8 @@ async function startTimerClubPlay(io: any, socket: Socket, data: any) {
         // const findTable = await getOneTable({ where: { ID: TABLE_ID } });
         const findTable = await getTable?.data?.getTable;
         if (!!findTable) {
-          if (findTable?.JOINT_PLAYER < findTable?.NO_OF_PLAYER) {
-            if (findTable?.JOINT_PLAYER + 1 === findTable?.NO_OF_PLAYER) {
+          if (findTable?.JOINT_PLAYER < 2) { // Force 2 players only
+            if (findTable?.JOINT_PLAYER + 1 === 2) { // Start game when 2nd player joins
               // TODO ::: Create New Record in table and clear after game finish
               const currentJoint = findTable?.JOINT_TABLE_CLUB_USER ?? [];
               currentJoint.push({

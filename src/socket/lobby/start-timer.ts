@@ -12,8 +12,9 @@ async function startTimerLobbyPlay(io: any, socket: Socket, data: any) {
         console.log("***********************")
         console.log(data)
         console.log("***********************")
-        const { Authtoken: token, NO_OF_PLAYER, LOBBY_ID, ENTRY_FEE,
+        const { Authtoken: token, LOBBY_ID, ENTRY_FEE,
             LOBBY_NAME, BUCKET_NAME, KEY } = JSON.parse(data);
+        const NO_OF_PLAYER = 2; // Force 2 players only
         if (!token) {
             socket.emit('res:unauthorized', { message: 'You are not authorized to perform this action.' });
         } else {
@@ -192,117 +193,46 @@ export { startTimerLobbyPlay };
  */
 async function playerLobbyForStart(currentPlayer: any) {
     try {
-        const { LOBBY_ID, ENTRY_FEE, NO_OF_PLAYER, USER_ID } = currentPlayer;
-        if (NO_OF_PLAYER === 2) {
-            const countQuery = {
-                where: {
-                    NO_OF_PLAYER, LOBBY_ID, ENTRY_FEE, USER_ID: Not(USER_ID)
-                },
-                order: {
-                    CREATED_DATE: "DESC"
-                },
-                take: 1
-            };
-            const countPlayerInLobby = await currentCount(countQuery);
-            // console.log(countPlayerInLobby)
-            if (countPlayerInLobby.length == 1) {
-                console.log([...countPlayerInLobby, currentPlayer].map((data: any) => (
-                    data.USER_ID
-                )))
-                const deleteWaitRoom = await multipleDeleted([...countPlayerInLobby, currentPlayer].map((data: any) => (
-                    data.USER_ID
-                )));
-                console.log(deleteWaitRoom)
-                let data = [...countPlayerInLobby, currentPlayer].map((user: any) => ({
-                    ...user,
-                    IS_JOINT_ROOM: true,
-                    IS_LEAVE_ROOM: false,
-                    IN_HAND_CARDS: [],
-                    TOTAL: 0,
-                    ROUNDS: [0],
-                    CURRENT_TOTAL: 0,
-                    CARD_LENGTH: 0,
-                    IS_PENALTY_SCORE: false,
-                    PENALTY_COUNT: 0
-                }))
+        const { LOBBY_ID, ENTRY_FEE, USER_ID } = currentPlayer;
+        const NO_OF_PLAYER = 2; // Force 2 players only
+        
+        const countQuery = {
+            where: {
+                NO_OF_PLAYER: 2, LOBBY_ID, ENTRY_FEE, USER_ID: Not(USER_ID)
+            },
+            order: {
+                CREATED_DATE: "DESC"
+            },
+            take: 1
+        };
+        const countPlayerInLobby = await currentCount(countQuery);
+        // console.log(countPlayerInLobby)
+        if (countPlayerInLobby.length == 1) {
+            console.log([...countPlayerInLobby, currentPlayer].map((data: any) => (
+                data.USER_ID
+            )))
+            const deleteWaitRoom = await multipleDeleted([...countPlayerInLobby, currentPlayer].map((data: any) => (
+                data.USER_ID
+            )));
+            console.log(deleteWaitRoom)
+            let data = [...countPlayerInLobby, currentPlayer].map((user: any) => ({
+                ...user,
+                IS_JOINT_ROOM: true,
+                IS_LEAVE_ROOM: false,
+                IN_HAND_CARDS: [],
+                TOTAL: 0,
+                ROUNDS: [0],
+                CURRENT_TOTAL: 0,
+                CARD_LENGTH: 0,
+                IS_PENALTY_SCORE: false,
+                PENALTY_COUNT: 0
+            }))
 
-                // Create Room
-                return { status: true, code: 1, data };
-            } else {
-                // No Create Room
-                return { status: false, code: 0 };
-            }
-        } else if (NO_OF_PLAYER === 3) {
-            const countQuery = {
-                where: {
-                    NO_OF_PLAYER, LOBBY_ID, ENTRY_FEE, USER_ID: Not(USER_ID)
-                },
-                order: {
-                    CREATED_DATE: "DESC"
-                },
-                take: 2
-            };
-            const countPlayerInLobby = await currentCount(countQuery);
-            if (countPlayerInLobby.length == 2) {
-                // console.log([...countPlayerInLobby, currentPlayer])
-                const deleteWaitRoom = await multipleDeleted([...countPlayerInLobby, currentPlayer].map((data: any) => (
-                    data.USER_ID
-                )));
-                // console.log(deleteWaitRoom)
-                let data = [...countPlayerInLobby, currentPlayer].map((user: any) => ({
-                    ...user,
-                    IS_JOINT_ROOM: true,
-                    IS_LEAVE_ROOM: false,
-                    IN_HAND_CARDS: [],
-                    TOTAL: 0,
-                    ROUNDS: [0],
-                    CURRENT_TOTAL: 0,
-                    CARD_LENGTH: 0,
-                    IS_PENALTY_SCORE: false,
-                    PENALTY_COUNT: 0
-                }))
-                // Create Room
-                return { status: true, code: 1, data };
-            } else {
-                // No Create Room
-                return { status: false, code: 0 };
-            }
-        } else if (NO_OF_PLAYER === 4) {
-            const countQuery = {
-                where: {
-                    NO_OF_PLAYER, LOBBY_ID, ENTRY_FEE, USER_ID: Not(USER_ID)
-                },
-                order: {
-                    CREATED_DATE: "DESC"
-                },
-                take: 3
-            };
-            const countPlayerInLobby = await currentCount(countQuery);
-            if (countPlayerInLobby.length == 3) {
-                const deleteWaitRoom = await multipleDeleted([...countPlayerInLobby, currentPlayer].map((data: any) => (
-                    data.USER_ID
-                )));
-                // console.log(deleteWaitRoom)
-                let data = [...countPlayerInLobby, currentPlayer].map((user: any) => ({
-                    ...user,
-                    IS_JOINT_ROOM: true,
-                    IS_LEAVE_ROOM: false,
-                    IN_HAND_CARDS: [],
-                    TOTAL: 0,
-                    ROUNDS: [0],
-                    CURRENT_TOTAL: 0,
-                    CARD_LENGTH: 0,
-                    IS_PENALTY_SCORE: false,
-                    PENALTY_COUNT: 0
-                }))
-                // Create Room
-                return { status: true, code: 1, data };
-            } else {
-                // No Create Room
-                return { status: false, code: 0 };
-            }
+            // Create Room
+            return { status: true, code: 1, data };
         } else {
-            return { status: false, message: "Lobby Start Error." };
+            // No Create Room
+            return { status: false, code: 0 };
         }
     } catch (error) {
         return { status: false, message: error?.message ?? "Lobby Start Error." };
@@ -316,116 +246,46 @@ async function playerLobbyForStart(currentPlayer: any) {
  */
 async function playerLobbyForLevel(currentPlayer: any) {
     try {
-        const { LOBBY_ID, ENTRY_FEE, NO_OF_PLAYER, USER_ID } = currentPlayer;
+        const { LOBBY_ID, ENTRY_FEE, USER_ID } = currentPlayer;
+        const NO_OF_PLAYER = 2; // Force 2 players only
         // console.log(`Current Player :::: `, currentPlayer);
         const findCurrentPlayerQuery = {
             where: {
-                NO_OF_PLAYER, LOBBY_ID, ENTRY_FEE, USER_ID: USER_ID
+                NO_OF_PLAYER: 2, LOBBY_ID, ENTRY_FEE, USER_ID: USER_ID
             }
         };
         let getPlayer: TempLobbyPlay = await findOneLobby(findCurrentPlayerQuery) as TempLobbyPlay;
         // console.log(`getPlayer Player :::: `, getPlayer);
-        if(!!getPlayer) {
-            if (NO_OF_PLAYER === 2 && getPlayer.IS_LOBBY == true && getPlayer.NO_OF_PLAYER === NO_OF_PLAYER) {
-                const countQuery = {
-                    where: {
-                        NO_OF_PLAYER, LOBBY_ID, ENTRY_FEE, USER_ID: Not(USER_ID)
-                    },
-                    order: {
-                        CREATED_DATE: "DESC"
-                    },
-                    take: 1
-                };
-                const countPlayerInLobby = await currentCount(countQuery);
-                if (countPlayerInLobby.length == 1) { // Create Room
-                    const deleteWaitRoom = await multipleDeleted([...countPlayerInLobby, currentPlayer].map((data: any) => (
-                        data.USER_ID
-                    )));
-                    // console.log(deleteWaitRoom)
-                    let data = [...countPlayerInLobby, getPlayer].map((user: any) => ({
-                        ...user,
-                        IS_JOINT_ROOM: true,
-                        IN_HAND_CARDS: [],
-                        TOTAL: 0,
-                        ROUNDS: [0],
-                        CURRENT_TOTAL: 0,
-                        CARD_LENGTH: 0,
-                        IS_PENALTY_SCORE: false,
-                        PENALTY_COUNT: 0
-                    }))
-                    return { status: true, code: 1, data };
-                } else {
-                    return { status: false, code: 0 };
-                }
-            } else if (NO_OF_PLAYER == 3 && getPlayer.IS_LOBBY == true && getPlayer.NO_OF_PLAYER === NO_OF_PLAYER) {
-                const countQuery = {
-                    where: {
-                        NO_OF_PLAYER, LOBBY_ID, ENTRY_FEE, USER_ID: Not(USER_ID)
-                    },
-                    order: {
-                        CREATED_DATE: "DESC"
-                    },
-                    take: 2
-                };
-                const countPlayerInLobby = await currentCount(countQuery);
-                // console.log(`countPlayerInLobby Player :::: `, countPlayerInLobby);
-                if (countPlayerInLobby.length >= 1) {
-                    const deleteWaitRoom = await multipleDeleted([...countPlayerInLobby, currentPlayer].map((data: any) => (
-                        data.USER_ID
-                    )));
-                    // console.log(deleteWaitRoom)
-                    // console.log([...countPlayerInLobby, currentPlayer])
-                    let data = [...countPlayerInLobby, getPlayer].map((user: any) => ({
-                        ...user,
-                        IS_JOINT_ROOM: true,
-                        IS_LEAVE_ROOM: false,
-                        IN_HAND_CARDS: [],
-                        TOTAL: 0,
-                        ROUNDS: [0],
-                        CURRENT_TOTAL: 0,
-                        CARD_LENGTH: 0,
-                        IS_PENALTY_SCORE: false,
-                        PENALTY_COUNT: 0
-                    }))
-                    // Create Room
-                    return { status: true, code: 1, data };
-                } else {
-                    return { status: false, code: 0 };
-                }
-            } else if (NO_OF_PLAYER == 4 && getPlayer.IS_LOBBY == true && getPlayer.NO_OF_PLAYER === NO_OF_PLAYER) {
-                const countQuery = {
-                    where: {
-                        NO_OF_PLAYER, LOBBY_ID, ENTRY_FEE, USER_ID: Not(USER_ID)
-                    },
-                    order: {
-                        CREATED_DATE: "DESC"
-                    },
-                    take: 3
-                };
-                const countPlayerInLobby = await currentCount(countQuery);
-                if (countPlayerInLobby.length >= 1) { // Create Room
-                    const deleteWaitRoom = await multipleDeleted([...countPlayerInLobby, currentPlayer].map((data: any) => (
-                        data.USER_ID
-                    )));
-                    // console.log(deleteWaitRoom)
-                    let data = [...countPlayerInLobby, getPlayer].map((user: any) => ({
-                        ...user,
-                        IS_JOINT_ROOM: true,
-                        IS_LEAVE_ROOM: false,
-                        IN_HAND_CARDS: [],
-                        TOTAL: 0,
-                        ROUNDS: [0],
-                        CURRENT_TOTAL: 0,
-                        CARD_LENGTH: 0,
-                        IS_PENALTY_SCORE: false,
-                        PENALTY_COUNT: 0
-                    }))
-                    return { status: true, code: 1, data };
-                } else {
-                    return { status: false, code: 0 };
-                }
+        if(!!getPlayer && getPlayer.IS_LOBBY == true) {
+            const countQuery = {
+                where: {
+                    NO_OF_PLAYER: 2, LOBBY_ID, ENTRY_FEE, USER_ID: Not(USER_ID)
+                },
+                order: {
+                    CREATED_DATE: "DESC"
+                },
+                take: 1
+            };
+            const countPlayerInLobby = await currentCount(countQuery);
+            if (countPlayerInLobby.length == 1) { // Create Room
+                const deleteWaitRoom = await multipleDeleted([...countPlayerInLobby, currentPlayer].map((data: any) => (
+                    data.USER_ID
+                )));
+                // console.log(deleteWaitRoom)
+                let data = [...countPlayerInLobby, getPlayer].map((user: any) => ({
+                    ...user,
+                    IS_JOINT_ROOM: true,
+                    IN_HAND_CARDS: [],
+                    TOTAL: 0,
+                    ROUNDS: [0],
+                    CURRENT_TOTAL: 0,
+                    CARD_LENGTH: 0,
+                    IS_PENALTY_SCORE: false,
+                    PENALTY_COUNT: 0
+                }))
+                return { status: true, code: 1, data };
             } else {
-                return { status: false, code: 0 };  // Timer Code 1 -- Waiting Time
+                return { status: false, code: 0 };
             }
         } else {
             return { status: false, code: 2 };
